@@ -9,7 +9,7 @@ def informar_dia_da_semana():
 
 
 def informar_anime_do_dia(banco_animes, cargo):
-    dia = "Segunda"
+    dia = informar_dia_da_semana()
     animes_do_dia = banco_animes.loc[dia, :]
     if type(animes_do_dia[1]) != str:
         return "Hoje não tem animezada :("
