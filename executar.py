@@ -3,13 +3,14 @@ import pandas as pd
 from objetos import Kaburagi
 from objetos.servidores import *
 from funcoes import retorna_hora
+from funcoes import cria_banco_de_dados
 import asyncio
 
 
 cliente = discord.Client()
 
-bd_animes = pd.read_csv('banco_animes/bd_animes.csv', header=None)
-bd_animes = bd_animes.set_index(0)
+bd_animes = cria_banco_de_dados()
+print(bd_animes)
 servidor = None
 kaburagi = None
 
@@ -34,7 +35,6 @@ async def on_message(mensagem):
 async def avisa_animezada():
     global kaburagi, servidor
     while True:
-        print('a')
         if retorna_hora() == '14:00':
             await servidor.canal.send(kaburagi.informar_anime_do_dia())
             return 0
