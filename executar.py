@@ -8,7 +8,7 @@ from funcoes import interpreta_mensagem
 import asyncio
 
 
-servidor = Bar_dos_Cornos
+servidor = Teste
 
 
 cliente = discord.Client()

@@ -84,11 +84,12 @@ class Kaburagi:
                     anime += '%s' % mensagem_separada[palavra]
                 else:
                     anime += ' %s' % mensagem_separada[palavra]
+            print(anime)
             for coluna in self.banco_animes:
                 if anime.lower() == self.banco_animes[coluna][0].lower():
                     num_episodios = self.banco_animes[coluna][2]
                     novo_num_episodios = int(self.banco_animes[coluna][2]) + int(mensagem_separada[-1])
-                    self.banco_animes = self.banco_animes.replace(num_episodios, novo_num_episodios)
+                    self.banco_animes = self.banco_animes.replace(num_episodios, str(novo_num_episodios))
                     self.banco_animes.to_csv('banco_animes/bd_animes.csv', index=False, header=False)
                     print(self.banco_animes)
                     return True, anime
