@@ -1,1 +1,0 @@
-from funcoes import informar_dia_da_semana

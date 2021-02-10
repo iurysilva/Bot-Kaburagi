@@ -1,4 +1,6 @@
 from funcoes import informar_dia_da_semana
+from funcoes import condicoes_adicionar_anime
+import pandas as pd
 
 
 class Kaburagi:
@@ -19,3 +21,30 @@ class Kaburagi:
             for cargo in self.servidor.dados.roles:
                 if cargo.name == self.servidor.cargo_para_marcar:
                     return '%s hoje tem:\n%s' % (cargo.mention, animes)
+
+    def adiciona_anime(self, mensagem):
+        validacao_de_mensagem = condicoes_adicionar_anime(mensagem)
+        if validacao_de_mensagem != "válida":
+            return False, validacao_de_mensagem
+        else:
+            mensagem_separada = mensagem.split(' ')
+            anime = ''
+            for palavra in range(1, len(mensagem_separada)-1):
+                if palavra == 1:
+                    anime += '%s' % mensagem_separada[palavra]
+                else:
+                    anime += ' %s' % mensagem_separada[palavra]
+            dia = mensagem.split(' ')[-1]
+            tamanho_banco = self.banco_animes.shape[1]
+            self.banco_animes.insert(tamanho_banco, tamanho_banco, [anime, "%s" % dia, 0])
+            self.banco_animes.to_csv('banco_animes/bd_animes.csv', index=False, header=False)
+            print(self.banco_animes)
+            return True, anime
+
+    def mostrar_animes(self):
+        mensagem = ''
+        for coluna in self.banco_animes:
+            mensagem += '-Anime: %s\n' % self.banco_animes[coluna][0]
+            mensagem += '-Dia: %s\n' % self.banco_animes[coluna][1]
+            mensagem += '-Último episódio visto: %d\n\n' % int(self.banco_animes[coluna][2])
+        return mensagem

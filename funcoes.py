@@ -17,5 +17,26 @@ def retorna_hora():
 
 def cria_banco_de_dados():
     bd_animes = pd.read_csv('banco_animes/bd_animes.csv', header=None)
-    bd_animes = bd_animes.rename(columns=bd_animes.iloc[0])
-    return  bd_animes.drop(bd_animes.index[0])
+    print(bd_animes, '\n')
+    return bd_animes
+
+
+def interpreta_mensagem(mensagem):
+    mensagem_separada = mensagem.split(' ')
+    if mensagem_separada[0].lower() == '?animes':
+        return 'animes'
+    elif mensagem_separada[0].lower() == '?adicionar':
+        return 'adicionar'
+    else:
+        return False
+
+
+def condicoes_adicionar_anime(mensagem):
+    mensagem_separada = mensagem.split(' ')
+    dias = ['segunda', 'terça', 'quarta', "quinta", "sexta", "sábado", "domingo"]
+    if len(mensagem_separada) < 3:
+        return "Comando com espaços faltando"
+    elif mensagem_separada[-1].lower() not in dias:
+        return "Dia escrito incorretamente, escreva no formato: Segunda, Terça etc."
+    else:
+        return "válida"
