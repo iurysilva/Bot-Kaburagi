@@ -27,6 +27,8 @@ def interpreta_mensagem(mensagem):
         return 'animes'
     elif mensagem_separada[0].lower() == '?adicionar':
         return 'adicionar'
+    elif mensagem_separada[0].lower() == '?remover':
+        return 'remover'
     else:
         return False
 
@@ -38,5 +40,13 @@ def condicoes_adicionar_anime(mensagem):
         return "Comando com espaços faltando"
     elif mensagem_separada[-1].lower() not in dias:
         return "Dia escrito incorretamente, escreva no formato: Segunda, Terça etc."
+    else:
+        return "válida"
+
+
+def condicoes_remover_anime(mensagem):
+    mensagem_separada = mensagem.split(' ')
+    if len(mensagem_separada) < 2:
+        return "Comando com espaços faltando"
     else:
         return "válida"

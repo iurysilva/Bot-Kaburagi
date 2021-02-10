@@ -36,6 +36,12 @@ async def on_message(mensagem):
                 await mensagem.channel.send("%s adicionado à lista" % reporte)
             elif not confirmacao:
                 await mensagem.channel.send(reporte)
+        elif comando == "remover":
+            confirmacao, reporte = kaburagi.remover_anime(mensagem.content)
+            if confirmacao:
+                await mensagem.channel.send("%s removido da lista" % reporte)
+            elif not confirmacao:
+                await mensagem.channel.send(reporte)
         elif comando == "animes":
             await mensagem.channel.send(kaburagi.mostrar_animes())
 

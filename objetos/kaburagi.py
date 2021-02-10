@@ -1,6 +1,6 @@
 from funcoes import informar_dia_da_semana
 from funcoes import condicoes_adicionar_anime
-import pandas as pd
+from funcoes import condicoes_remover_anime
 
 
 class Kaburagi:
@@ -40,6 +40,27 @@ class Kaburagi:
             self.banco_animes.to_csv('banco_animes/bd_animes.csv', index=False, header=False)
             print(self.banco_animes)
             return True, anime
+
+    def remover_anime(self, mensagem):
+        validacao_de_mensagem = condicoes_remover_anime(mensagem)
+        if validacao_de_mensagem != "válida":
+            return False, validacao_de_mensagem
+        else:
+            mensagem_separada = mensagem.split(' ')
+            anime = ''
+            for palavra in range(1, len(mensagem_separada)):
+                if palavra == 1:
+                    anime += '%s' % mensagem_separada[palavra]
+                else:
+                    anime += ' %s' % mensagem_separada[palavra]
+            print(anime)
+            for coluna in self.banco_animes:
+                if anime.lower() == self.banco_animes[coluna][0].lower():
+                    self.banco_animes = self.banco_animes.drop(columns=[coluna])
+                    self.banco_animes.to_csv('banco_animes/bd_animes.csv', index=False, header=False)
+                    print(self.banco_animes)
+                    return True, anime
+            return False, "Anime não encontrado e não removido"
 
     def mostrar_animes(self):
         mensagem = ''
