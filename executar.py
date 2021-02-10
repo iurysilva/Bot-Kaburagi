@@ -24,12 +24,14 @@ async def on_message(mensagem):
         servidor = servidor(cliente)
         kaburagi = Kaburagi(cliente, servidor, bd_animes)
         bot_ativo = True
-        await servidor.canal.send("Bot iniciado!")
+        await servidor.canal.send("Kaburagi iniciado!\n\n")
 
     if mensagem.channel.id == servidor.canal.id:
         comando = interpreta_mensagem(mensagem.content)
         if not comando:
             pass
+        elif comando == "ajuda":
+            await mensagem.channel.send("%s" % kaburagi.ajuda())
         elif comando == "adicionar":
             confirmacao, reporte = kaburagi.adiciona_anime(mensagem.content)
             if confirmacao:
@@ -40,6 +42,12 @@ async def on_message(mensagem):
             confirmacao, reporte = kaburagi.remover_anime(mensagem.content)
             if confirmacao:
                 await mensagem.channel.send("%s removido da lista" % reporte)
+            elif not confirmacao:
+                await mensagem.channel.send(reporte)
+        elif comando == "assistido":
+            confirmacao, reporte = kaburagi.incrementar_episodio(mensagem.content)
+            if confirmacao:
+                await mensagem.channel.send("%s teve o número de episódios incrementado" % reporte)
             elif not confirmacao:
                 await mensagem.channel.send(reporte)
         elif comando == "animes":

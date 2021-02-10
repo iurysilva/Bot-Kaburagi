@@ -29,6 +29,10 @@ def interpreta_mensagem(mensagem):
         return 'adicionar'
     elif mensagem_separada[0].lower() == '?remover':
         return 'remover'
+    elif mensagem_separada[0].lower() == '?assistido':
+        return 'assistido'
+    elif mensagem_separada[0].lower() == '?ajuda':
+        return 'ajuda'
     else:
         return False
 
@@ -47,6 +51,16 @@ def condicoes_adicionar_anime(mensagem):
 def condicoes_remover_anime(mensagem):
     mensagem_separada = mensagem.split(' ')
     if len(mensagem_separada) < 2:
+        return "Comando com espaços faltando"
+    else:
+        return "válida"
+
+
+def condicoes_incrementar_episodio(mensagem):
+    mensagem_separada = mensagem.split(' ')
+    if not mensagem_separada[-1].isdigit():
+        return "Número de episódios assistidos faltando"
+    elif len(mensagem_separada) < 3:
         return "Comando com espaços faltando"
     else:
         return "válida"
