@@ -23,7 +23,7 @@ class Kaburagi:
     def informar_anime_do_dia(self):
         animes_do_dia = []
         episodios = []
-        dia_de_hoje = 'segunda'#informar_dia_da_semana()
+        dia_de_hoje = informar_dia_da_semana()
         for coluna in self.banco_animes:
             atributo_dia = self.banco_animes[coluna][1]
             if atributo_dia.lower() == dia_de_hoje.lower():

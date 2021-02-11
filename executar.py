@@ -8,7 +8,7 @@ from funcoes import interpreta_mensagem
 import asyncio
 
 
-servidor = Teste
+servidor = Bar_dos_Cornos
 
 
 cliente = discord.Client()
@@ -70,4 +70,4 @@ async def avisa_animezada():
 cliente.loop.create_task(avisa_animezada())
 teste = 'ODA5MTkyNzQxNTg1NTUxNDEw.YCRhdw.i0vRre5B8mps9e96OheLxGT5yjI'
 bot = 'ODA4NzEzNTMzMzk4ODQzMzky.YCKjKw.kiOqb-Mud_Ji3Bk-sfU8GIUlR4U'
-cliente.run('ODA5MTkyNzQxNTg1NTUxNDEw.YCRhdw.i0vRre5B8mps9e96OheLxGT5yjI')
+cliente.run('ODA4NzEzNTMzMzk4ODQzMzky.YCKjKw.kiOqb-Mud_Ji3Bk-sfU8GIUlR4U')
