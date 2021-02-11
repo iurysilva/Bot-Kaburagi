@@ -12,15 +12,16 @@ class Kaburagi:
 
     def ajuda(self):
         mensagem1 = "Lista de Comandos:\n"
-        mensagem2 = "?animes - Lista todos os animes sendo assistidos no momento, com episódio atual e dia.\n"
+        mensagem2 = "?animes - Mostra todos os animes sendo assistidos no momento, com episódio atual e dia.\n"
         mensagem3 = "?adicionar (anime) (dia) - Adiciona um anime para o Animezada, dia no formato: terça, quarta etc.\n"
         mensagem4 = "?remover (anime) - Remove uma anime do Animezada\n"
         mensagem5 = "?assistido (anime) (número de episódios vistos) - Modifica o episódio atual do anime\n"
-        mensagem = mensagem1 + mensagem2 + mensagem3 + mensagem4 + mensagem5
+        mensagem6 = "?hoje - Informa os animes que serão assistidos no dia atual\n"
+        mensagem = mensagem1 + mensagem2 + mensagem3 + mensagem4 + mensagem5 + mensagem6
         print(mensagem)
-        return mensagem1 + mensagem2 + mensagem3 + mensagem4 + mensagem5
+        return mensagem
 
-    def informar_anime_do_dia(self):
+    def informar_anime_do_dia(self, autor=False):
         animes_do_dia = []
         episodios = []
         dia_de_hoje = informar_dia_da_semana()
@@ -32,12 +33,16 @@ class Kaburagi:
         if not animes_do_dia:
             return "Hoje não tem animezada :("
         else:
-            mensagem = ''
+            saida = ''
             for anime in range(0, len(animes_do_dia)):
-                mensagem += '-%s episódio %s\n' % (animes_do_dia[anime], episodios[anime])
-            for cargo in self.servidor.dados.roles:
-                if cargo.name == self.servidor.cargo_para_marcar:
-                    return '%s hoje tem:\n%s' % (cargo.mention, mensagem)
+                saida += '-%s: episódio %s\n' % (animes_do_dia[anime], episodios[anime])
+            if not autor:
+                for cargo in self.servidor.dados.roles:
+                    if cargo.name == self.servidor.cargo_para_marcar:
+                        return '%s hoje tem:\n%s' % (cargo.mention, saida)
+            if autor:
+                return '%s hoje tem:\n%s' % (autor.mention, saida)
+
 
     def adiciona_anime(self, mensagem):
         validacao_de_mensagem = condicoes_adicionar_anime(mensagem)

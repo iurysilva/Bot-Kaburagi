@@ -33,6 +33,8 @@ def interpreta_mensagem(mensagem):
         return 'assistido'
     elif mensagem_separada[0].lower() == '?ajuda':
         return 'ajuda'
+    elif mensagem_separada[0].lower() == '?hoje':
+        return 'hoje'
     else:
         return False
 
