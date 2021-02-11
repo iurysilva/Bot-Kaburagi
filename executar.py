@@ -59,13 +59,15 @@ async def avisa_animezada():
     global kaburagi, servidor, bot_ativo
     avisar = True
     while True:
-        if (retorna_hora() == '11:01' or retorna_hora() == '22:30') and avisar:
+        if (retorna_hora() == '20:00' or retorna_hora() == '22:30') and avisar:
             avisar = False
             await servidor.canal.send(kaburagi.informar_anime_do_dia())
-        if retorna_hora() == '11:02' or retorna_hora() == "22:31":
+        if retorna_hora() == '20:01' or retorna_hora() == "22:31":
             avisar = True
         await asyncio.sleep(1)
 
 
 cliente.loop.create_task(avisa_animezada())
+teste = 'ODA5MTkyNzQxNTg1NTUxNDEw.YCRhdw.i0vRre5B8mps9e96OheLxGT5yjI'
+bot = 'ODA4NzEzNTMzMzk4ODQzMzky.YCKjKw.kiOqb-Mud_Ji3Bk-sfU8GIUlR4U'
 cliente.run('ODA5MTkyNzQxNTg1NTUxNDEw.YCRhdw.i0vRre5B8mps9e96OheLxGT5yjI')
