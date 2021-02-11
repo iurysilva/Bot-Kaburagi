@@ -15,23 +15,29 @@ class Kaburagi:
         mensagem2 = "?animes - Lista todos os animes sendo assistidos no momento, com episódio atual e dia.\n"
         mensagem3 = "?adicionar (anime) (dia) - Adiciona um anime para o Animezada, dia no formato: terça, quarta etc.\n"
         mensagem4 = "?remover (anime) - Remove uma anime do Animezada\n"
-        mensagem5 = "?Assistido (anime) (número de episódios vistos) - incrementa o número de episódios do anime\n"
+        mensagem5 = "?assistido (anime) (número de episódios vistos) - Modifica o episódio atual do anime\n"
         mensagem = mensagem1 + mensagem2 + mensagem3 + mensagem4 + mensagem5
         print(mensagem)
         return mensagem1 + mensagem2 + mensagem3 + mensagem4 + mensagem5
 
     def informar_anime_do_dia(self):
-        dia = informar_dia_da_semana()
-        animes_do_dia = self.banco_animes.loc[dia, :]
-        if type(animes_do_dia[1]) != str:
+        animes_do_dia = []
+        episodios = []
+        dia_de_hoje = 'segunda'#informar_dia_da_semana()
+        for coluna in self.banco_animes:
+            atributo_dia = self.banco_animes[coluna][1]
+            if atributo_dia.lower() == dia_de_hoje.lower():
+                animes_do_dia.append(self.banco_animes[coluna][0])
+                episodios.append(self.banco_animes[coluna][2])
+        if not animes_do_dia:
             return "Hoje não tem animezada :("
         else:
-            animes = ''
-            for anime in animes_do_dia:
-                animes += '-%s\n' % anime
+            mensagem = ''
+            for anime in range(0, len(animes_do_dia)):
+                mensagem += '-%s episódio %s\n' % (animes_do_dia[anime], episodios[anime])
             for cargo in self.servidor.dados.roles:
                 if cargo.name == self.servidor.cargo_para_marcar:
-                    return '%s hoje tem:\n%s' % (cargo.mention, animes)
+                    return '%s hoje tem:\n%s' % (cargo.mention, mensagem)
 
     def adiciona_anime(self, mensagem):
         validacao_de_mensagem = condicoes_adicionar_anime(mensagem)
@@ -72,7 +78,7 @@ class Kaburagi:
                     return True, anime
             return False, "Anime não encontrado e não removido"
 
-    def incrementar_episodio(self, mensagem):
+    def modificar_episodio(self, mensagem):
         validacao_de_mensagem = condicoes_incrementar_episodio(mensagem)
         if validacao_de_mensagem != "válida":
             return False, validacao_de_mensagem
@@ -88,7 +94,7 @@ class Kaburagi:
             for coluna in self.banco_animes:
                 if anime.lower() == self.banco_animes[coluna][0].lower():
                     num_episodios = self.banco_animes[coluna][2]
-                    novo_num_episodios = int(self.banco_animes[coluna][2]) + int(mensagem_separada[-1])
+                    novo_num_episodios = int(mensagem_separada[-1])
                     self.banco_animes = self.banco_animes.replace(num_episodios, str(novo_num_episodios))
                     self.banco_animes.to_csv('banco_animes/bd_animes.csv', index=False, header=False)
                     print(self.banco_animes)

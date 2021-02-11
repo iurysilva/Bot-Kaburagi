@@ -45,24 +45,27 @@ async def on_message(mensagem):
             elif not confirmacao:
                 await mensagem.channel.send(reporte)
         elif comando == "assistido":
-            confirmacao, reporte = kaburagi.incrementar_episodio(mensagem.content)
+            confirmacao, reporte = kaburagi.modificar_episodio(mensagem.content)
             if confirmacao:
-                await mensagem.channel.send("%s teve o número de episódios incrementado" % reporte)
+                await mensagem.channel.send("%s teve seu episódio atual modificado" % reporte)
             elif not confirmacao:
                 await mensagem.channel.send(reporte)
         elif comando == "animes":
             await mensagem.channel.send(kaburagi.mostrar_animes())
 
-'''
+
 @cliente.event
 async def avisa_animezada():
-    global kaburagi, servidor
+    global kaburagi, servidor, bot_ativo
+    avisar = True
     while True:
-        if retorna_hora() == '14:00':
+        if (retorna_hora() == '11:01' or retorna_hora() == '22:30') and avisar:
+            avisar = False
             await servidor.canal.send(kaburagi.informar_anime_do_dia())
-            return 0
+        if retorna_hora() == '11:02' or retorna_hora() == "22:31":
+            avisar = True
         await asyncio.sleep(1)
-'''
 
-# cliente.loop.create_task(avisa_animezada())
-cliente.run('ODA4NzEzNTMzMzk4ODQzMzky.YCKjKw.kiOqb-Mud_Ji3Bk-sfU8GIUlR4U')
+
+cliente.loop.create_task(avisa_animezada())
+cliente.run('ODA5MTkyNzQxNTg1NTUxNDEw.YCRhdw.i0vRre5B8mps9e96OheLxGT5yjI')
