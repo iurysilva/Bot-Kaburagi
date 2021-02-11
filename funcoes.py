@@ -16,8 +16,15 @@ def retorna_hora():
 
 
 def cria_banco_de_dados():
-    bd_animes = pd.read_csv('banco_animes/bd_animes.csv', header=None)
-    print(bd_animes, '\n')
+    
+    try:
+        bd_animes = pd.read_csv('banco_animes/bd_animes.csv', 
+                                header=None,
+                                names=['anime','dia','episodio']
+                                )
+    except:
+        bd_animes = pd.DataFrame(columns=['anime','dia','episodio'])
+    print(bd_animes)
     return bd_animes
 
 
@@ -66,3 +73,13 @@ def condicoes_incrementar_episodio(mensagem):
         return "Comando com espaços faltando"
     else:
         return "válida"
+
+
+def retorna_comandos():
+    comandos = []
+    comandos.append(["?animes", "Mostra todos os animes sendo assistidos no momento, com episódio atual e dia."])
+    comandos.append(["?adicionar (anime) (dia)", "Adiciona um anime para o Animezada, dia no formato: terça, quarta etc."])
+    comandos.append(["?remover (anime)", "Remove uma anime do Animezada."])
+    comandos.append(["?assistido (anime) (episódio visto)", "Modifica o episódio atual do anime."])
+    comandos.append(["?hoje", "Informa os animes que serão assistidos no dia atual."])
+    return comandos
