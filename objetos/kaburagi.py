@@ -42,7 +42,6 @@ class Kaburagi:
                 saida.add_field(name=animes_do_dia[anime], value="Episódio %s" %episodios[anime], inline=False) 
             return saida
 
-
     def adiciona_anime(self, mensagem):
         validacao_de_mensagem = condicoes_adicionar_anime(mensagem)
         if validacao_de_mensagem != "válida":
@@ -58,7 +57,7 @@ class Kaburagi:
             dia = mensagem.split(' ')[-1]
             anime_e_dia = pd.DataFrame(np.array([[anime, dia, 0]]),
                                                 columns=['anime','dia','episodio'])
-            self.banco_animes = pd.concat([self.banco_animes,anime_e_dia])
+            self.banco_animes = pd.concat([self.banco_animes, anime_e_dia], ignore_index=True, axis=0)
             self.banco_animes.to_csv('banco_animes/bd_animes.csv', index=False, header=False)
             print(self.banco_animes)
             return True, anime
@@ -98,8 +97,8 @@ class Kaburagi:
             for index,anime in self.banco_animes.iterrows():
                 if anime_escolhido.lower() == anime[0].lower():
                     novo_num_episodios = mensagem_separada[-1]
-                    self.banco_animes.__getitem__('episodio').__setitem__(index, novo_num_episodios)
-                    self.banco_animes.to_csv('banco_animes/bd_animes.csv', index=False, header=False)
+                    self.banco_animes.loc[index, "episodio"] = novo_num_episodios
+                    self.banco_animes.to_csv('banco_animes/bd_animes.csv', index=True, header=False)
                     print(self.banco_animes)
                     return True, anime_escolhido
             return False, "Anime não encontrado e não incrementado"
