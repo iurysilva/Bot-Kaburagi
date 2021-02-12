@@ -5,6 +5,7 @@ from funcoes import condicoes_remover_anime
 from funcoes import condicoes_incrementar_episodio
 from funcoes import retorna_comandos
 import discord
+import string
 
 import pandas as pd
 import numpy as np
@@ -43,6 +44,7 @@ class Kaburagi:
             return saida
 
     def adiciona_anime(self, mensagem):
+        mensagem = string.capwords(mensagem)
         validacao_de_mensagem = condicoes_adicionar_anime(mensagem)
         if validacao_de_mensagem != "válida":
             return False, validacao_de_mensagem
