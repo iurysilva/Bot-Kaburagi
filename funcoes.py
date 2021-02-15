@@ -82,7 +82,7 @@ def retorna_comandos():
     comandos = []
     comandos.append(["?animes", "Mostra todos os animes sendo assistidos no momento, com episódio atual e dia."])
     comandos.append(["?adicionar (anime) (dia)", "Adiciona um anime para o Animezada, dia no formato: terça, quarta etc."])
-    comandos.append(["?remover (anime)", "Remove uma anime do Animezada."])
+    comandos.append(["?remover (anime)", "Remove um anime do Animezada."])
     comandos.append(["?assistido (anime) (episódio visto)", "Modifica o episódio atual do anime."])
     comandos.append(["?hoje", "Informa os animes que serão assistidos no dia atual."])
     return comandos

@@ -105,6 +105,6 @@ class Kaburagi:
 
     def mostrar_animes(self):
         embed = discord.Embed(title="Animes sendo vistos atualmente:")
-        for _,anime in self.banco_animes.iterrows():
-            embed.add_field(name=anime[0], value='Dia: %s\nEpisódio: %s' % (anime[1],anime[2]), inline=False)
+        for _, anime in self.banco_animes.iterrows():
+            embed.add_field(name=anime[0], value='Dia: %s\nÚltimo episódio visto: %s' % (anime[1],anime[2]), inline=False)
         return embed
