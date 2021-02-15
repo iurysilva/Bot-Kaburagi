@@ -73,5 +73,5 @@ async def avisa_animezada():
 
 cliente.loop.create_task(avisa_animezada())
 teste = 'ODA5MTkyNzQxNTg1NTUxNDEw.YCRhdw.i0vRre5B8mps9e96OheLxGT5yjI'
-bot = open('token.txt','r').read()
+bot = open('token.txt', 'r').read()
 cliente.run(teste)

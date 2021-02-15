@@ -5,7 +5,10 @@ import pandas as pd
 def informar_dia_da_semana():
     dias_da_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado', 'Domingo']
     data = datetime.date.today().today()
-    dia_da_semana_atual = dias_da_semana[data.weekday()]
+    if 0 < int(retorna_hora()[:2]) < 3:
+        dia_da_semana_atual = dias_da_semana[data.weekday() - 1]
+    else:
+        dia_da_semana_atual = dias_da_semana[data.weekday()]
     return dia_da_semana_atual
 
 
