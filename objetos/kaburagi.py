@@ -17,15 +17,13 @@ class Kaburagi:
         self.servidor = servidor
         self.banco_animes = banco_animes
 
-
     def ajuda(self):
         embed = discord.Embed(title="Lista de Comandos:")
         comandos = retorna_comandos()
         for comando in comandos:
             embed.add_field(name=comando[0], value=comando[1], inline=False)   
         return embed 
-        
-        
+
     def informar_anime_do_dia(self):
         animes_do_dia = []
         episodios = []
@@ -40,7 +38,7 @@ class Kaburagi:
         else:
             saida = discord.Embed(title="Hoje tem:")
             for anime in range(0, len(animes_do_dia)):
-                saida.add_field(name=animes_do_dia[anime], value="Episódio %s" %episodios[anime], inline=False) 
+                saida.add_field(name=animes_do_dia[anime], value="Episódio %d" % int((episodios[anime])+1), inline=False)
             return saida
 
     def adiciona_anime(self, mensagem):
