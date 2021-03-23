@@ -1,0 +1,79 @@
+import sqlite3
+import os
+from discord.embeds import Embed
+import string
+
+
+class Lembrete:
+    def __init__(self):
+        self.nome_dos_bancos = []
+        self.caminho = 'funcionalidades/funcionalidade_lembretes'
+        self.dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
+
+    def atualizar_lista_de_bancos(self):
+        for arquivo in os.listdir(self.caminho):
+            if arquivo != '__pycache__' and arquivo != 'lembretes.py':
+                self.nome_dos_bancos.append(arquivo)
+        print('Servidores com lembretes: ', self.nome_dos_bancos, '\n')
+
+    def verifica_banco(self, contexto):
+        servidor = contexto.guild.name
+        print('Verificação de banco feita em: ', servidor)
+        if servidor in self.nome_dos_bancos:
+            print('banco %s existe\n' % servidor)
+            return True, Embed(title="Este servidor possui lembretes")
+        else:
+            print('Banco %s não existe\n' % servidor)
+            return False, Embed(title="Este servidor não possui lembretes")
+
+    def interpreta_mensagem(self, mensagem):
+        mensagem = list(mensagem)
+        for palavra in range(len(mensagem)):
+            mensagem[palavra] = string.capwords(mensagem[palavra])
+        print("Interpretando mensagem: ", mensagem)
+        achou_index = False
+        index = None
+        for dia in self.dias:
+            if dia in mensagem:
+                index = mensagem.index(dia)
+        if not achou_index:
+            print('Dia encontrado na posição: ', index, '\n')
+            return True, index
+        else:
+            print('Dia não encontrado\n')
+            return False, index
+
+    def adicionar_lembrete(self, contexto, nome, dia, adicional="Nada"):
+        print('Função adicionar lembrete')
+        banco_existe, resultado = self.verifica_banco(contexto)
+        banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
+        cursor = banco.cursor()
+        if not banco_existe:
+            print('Banco %s não existe, criando banco e inserindo...\n' % contexto.guild)
+            cursor.execute("CREATE TABLE Lembretes (Nome text, Dia text, Adicional text)")
+            cursor.execute("INSERT INTO Lembretes VALUES(?, ?, ?)", (nome, dia, adicional))
+        else:
+            print('Banco %s existe, inserindo...\n' % contexto.guild)
+            cursor.execute("INSERT INTO Lembretes VALUES(?, ?, ?)", (nome, dia, adicional))
+        banco.commit()
+        embed = Embed(title="Lembrete Inserido")
+        embed.add_field(name=nome, value="Dia: %s" % dia)
+        self.nome_dos_bancos.append(contexto.guild.name)
+        return embed
+
+    def mostra_lembretes(self, contexto):
+        print('Função mostra lembretes')
+        banco_existe, resultado = self.verifica_banco(contexto)
+        if banco_existe:
+            embed = Embed(title="Lembretes")
+            banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
+            cursor = banco.cursor()
+            for dia in self.dias:
+                cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia,))
+                for lembrete in cursor.fetchall():
+                    print(lembrete)
+                    embed.add_field(name=lembrete[0], value="Dia: %s\nInformação Adicional: %s" % (lembrete[1],
+                    lembrete[2]), inline=False)
+            return True, embed
+        else:
+            return False, resultado
