@@ -42,13 +42,31 @@ async def al(contexto, *args):
     flag, index_do_dia = lembrete.interpreta_mensagem(args)
     if flag:
         dia = string.capwords(args[index_do_dia])
-        nome = ' '.join(args[0:index_do_dia])
+        nome = string.capwords(' '.join(args[0:index_do_dia]))
         adicional = ' '.join(args[index_do_dia+1:])
         resultado = lembrete.adicionar_lembrete(contexto, nome, dia, adicional)
         await contexto.send(embed=resultado)
     else:
         await contexto.send(embed=Embed(title='Dia não encontrado na mensagem'))
 
+
+@cliente.command()
+async def remover_lembrete(contexto, *args):
+    nome = string.capwords(' '.join(args))
+    removido, mensagem = lembrete.remover_lembrete(contexto, nome)
+    await contexto.send(embed=Embed(title='%s' % mensagem))
+
+
+@cliente.command()
+async def rl(contexto, *args):
+    nome = string.capwords(' '.join(args))
+    removido, mensagem = lembrete.remover_lembrete(contexto, nome)
+    await contexto.send(embed=Embed(title='%s' % mensagem))
+
+
+@cliente.command()
+async def ajuda(contexto):
+    await contexto.send(embed=lembrete.ajuda())
 '''
 @cliente.event
 async def avisa_animezada():

@@ -9,6 +9,17 @@ class Lembrete:
         self.nome_dos_bancos = []
         self.caminho = 'funcionalidades/funcionalidade_lembretes'
         self.dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
+        self.comandos = [["?lembretes", "Lista todos os lembretes do servidor."],
+                    ["?adicionar_lembrete (nome) (dia) (informação adicional)",
+                     "Adiciona um lembrete, abreviação do comando: ?al."],
+                    ["?remover_lembrete (nome)", "Remove um lembrete do servidor, abreviação do comando: ?rl."]]
+
+    def ajuda(self):
+        embed = Embed(title="Lista de Comandos:")
+        comandos = self.comandos
+        for comando in comandos:
+            embed.add_field(name=comando[0], value=comando[1], inline=False)
+        return embed
 
     def atualizar_lista_de_bancos(self):
         for arquivo in os.listdir(self.caminho):
@@ -57,9 +68,23 @@ class Lembrete:
             cursor.execute("INSERT INTO Lembretes VALUES(?, ?, ?)", (nome, dia, adicional))
         banco.commit()
         embed = Embed(title="Lembrete Inserido")
-        embed.add_field(name=nome, value="Dia: %s" % dia)
+        embed.add_field(name=nome, value="Dia: %s\nInformação Adicional: %s" % (dia, adicional))
         self.nome_dos_bancos.append(contexto.guild.name)
         return embed
+
+    def remover_lembrete(self, contexto, nome):
+        print('Função remover lembrete')
+        banco_existe, resultado = self.verifica_banco(contexto)
+        if banco_existe:
+            banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
+            cursor = banco.cursor()
+            cursor.execute('DELETE from Lembretes WHERE Nome = ?', (nome,))
+            banco.commit()
+            print('Dados removidos com sucesso\n')
+            return True, "Lembrete para %s removido :)" % nome
+        else:
+            print('Banco %s não existe\n')
+            return False, resultado
 
     def mostra_lembretes(self, contexto):
         print('Função mostra lembretes')
