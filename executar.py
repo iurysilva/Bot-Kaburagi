@@ -1,6 +1,4 @@
-import asyncio
 from discord.ext import commands
-from funcoes import retorna_hora
 from funcionalidades import Lembrete
 from discord.embeds import Embed
 import string
