@@ -14,10 +14,10 @@ class Lembrete:
                     ["?adicionar_lembrete (nome) (dia) (informação adicional)",
                      "Adiciona um lembrete, abreviação do comando: ?al."],
                     ["?remover_lembrete (nome)", "Remove um lembrete do servidor, abreviação do comando: ?rl."],
-                         ["?hoje", "Exibe os lembretes correspondentes ao dia atual."]]
-        self.eia_esperando_mensagem = []
-        self.en_esperando_mensagem = []
-        self.edia_esperando_mensagem = []
+                         ["?hoje", "Exibe os lembretes correspondentes ao dia atual."],
+                         ["?editar_informacao_adicional (nome)",
+                          "Edita as informações adicionais de um lembrete, abreviação do comando: ?eia."],
+                         ["?editar_dia (nome)", "Edita o dia de um lembrete, abreviação do comando: ?ed."]]
 
     def ajuda(self):
         embed = Embed(title="Lista de Comandos:")
@@ -139,6 +139,19 @@ class Lembrete:
         banco.commit()
         embed = Embed(title="Lembrete Atualizado")
         embed.add_field(name=nome, value="Informação Adicional: %s" % mensagem)
+        return embed
+
+    def editar_dia(self, contexto, nome, dia):
+        print("Editando dia de %s" % nome)
+        print("Dia = %s\n" % dia)
+        if dia not in self.dias:
+            return Embed(title="Dia inválido")
+        banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
+        cursor = banco.cursor()
+        cursor.execute("UPDATE Lembretes SET Dia = (?) WHERE Nome = (?)", (dia, nome))
+        banco.commit()
+        embed = Embed(title="Lembrete Atualizado")
+        embed.add_field(name=nome, value="Dia: %s" % dia)
         return embed
 
     def verifica_se_nome_existe(self, contexto, nome):

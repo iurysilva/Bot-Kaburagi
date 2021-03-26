@@ -80,10 +80,13 @@ async def editar_informacao_adicional(contexto, *args):
         await contexto.send(embed=resultado)
     else:
         nome = string.capwords(' '.join(args))
+        if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
+            await contexto.send(embed=Embed(title="Informe um lembrete válido"))
+            return 0
         await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
         mensagem = await cliente.wait_for('message', check=check)
-        print(mensagem.content)
-        await contexto.send("ta bom")
+        mensagem = string.capwords(mensagem.content)
+        await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem))
 
 
 @cliente.command()
@@ -101,7 +104,46 @@ async def eia(contexto, *args):
             return 0
         await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
         mensagem = await cliente.wait_for('message', check=check)
-        await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem.content))
+        mensagem = string.capwords(mensagem.content)
+        await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem))
+
+
+@cliente.command()
+async def ed(contexto, *args):
+    def check(mensagem):
+        return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
+
+    banco_existe, resultado = lembrete.verifica_banco(contexto)
+    if not banco_existe:
+        await contexto.send(embed=resultado)
+    else:
+        nome = string.capwords(' '.join(args))
+        if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
+            await contexto.send(embed=Embed(title="Informe um lembrete válido"))
+            return 0
+        await contexto.send(embed=Embed(title="Para qual dia devo mudar %s?" % nome))
+        mensagem = await cliente.wait_for('message', check=check)
+        mensagem = string.capwords(mensagem.content)
+        await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
+
+
+@cliente.command()
+async def editar_dia(contexto, *args):
+    def check(mensagem):
+        return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
+
+    banco_existe, resultado = lembrete.verifica_banco(contexto)
+    if not banco_existe:
+        await contexto.send(embed=resultado)
+    else:
+        nome = string.capwords(' '.join(args))
+        if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
+            await contexto.send(embed=Embed(title="Informe um lembrete válido"))
+            return 0
+        await contexto.send(embed=Embed(title="Para qual dia devo mudar %s?" % nome))
+        mensagem = await cliente.wait_for('message', check=check)
+        mensagem = string.capwords(mensagem.content)
+        await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
 '''
 @cliente.event
 async def avisa_animezada():
