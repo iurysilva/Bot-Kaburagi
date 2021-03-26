@@ -13,7 +13,8 @@ class Lembrete:
         self.comandos = [["?lembretes", "Lista todos os lembretes do servidor."],
                     ["?adicionar_lembrete (nome) (dia) (informação adicional)",
                      "Adiciona um lembrete, abreviação do comando: ?al."],
-                    ["?remover_lembrete (nome)", "Remove um lembrete do servidor, abreviação do comando: ?rl."]]
+                    ["?remover_lembrete (nome)", "Remove um lembrete do servidor, abreviação do comando: ?rl."],
+                         ["?hoje", "Exibe os lembretes correspondentes ao dia atual."]]
 
     def ajuda(self):
         embed = Embed(title="Lista de Comandos:")
@@ -108,16 +109,20 @@ class Lembrete:
         print('Função hoje')
         banco_existe, resultado = self.verifica_banco(contexto)
         if banco_existe:
-            embed = Embed(title="Lembretes de Hoje")
+            dia_da_semana = retorna_dia_da_semana()
+            embed = Embed(title="Lembretes de %s:" % dia_da_semana)
             banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
             cursor = banco.cursor()
-            dia_da_semana = retorna_dia_da_semana()
             cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia_da_semana,))
+            vazio = True
             for lembrete in cursor.fetchall():
+                vazio = False
                 print('exibindo lembrete: ', lembrete)
-                embed.add_field(name=lembrete[0], value="Dia: %s\nInformação Adicional: %s" % (lembrete[1],
-                                                                                               lembrete[2]),
-                                inline=False)
-            return True, embed
+                embed.add_field(name=lembrete[0], value="Informação Adicional: %s" % (lembrete[2]), inline=False)
+            if not vazio:
+                return True, embed
+            else:
+                embed.title = "Não há lembretes para %s" % dia_da_semana
+                return False, embed
         else:
             return False, resultado
