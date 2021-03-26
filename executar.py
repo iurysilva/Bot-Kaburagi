@@ -1,4 +1,4 @@
-from discord.ext import commands
+from discord.ext import commands, tasks
 from funcionalidades import Lembrete
 from discord.embeds import Embed
 import string
@@ -6,6 +6,7 @@ import string
 cliente = commands.Bot(command_prefix='?')
 lembrete = Lembrete()
 lembrete.atualizar_lista_de_bancos()
+
 
 @cliente.event
 async def on_ready():
@@ -65,7 +66,7 @@ async def ajuda(contexto):
 
 @cliente.command()
 async def hoje(contexto):
-    banco_existe, resultado = lembrete.hoje(contexto)
+    banco_existe, resultado = lembrete.hoje(contexto.guild.name)
     await contexto.send('%s' % contexto.author.mention)
     await contexto.send(embed=resultado)
 
@@ -75,7 +76,7 @@ async def editar_informacao_adicional(contexto, *args):
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
-    banco_existe, resultado = lembrete.verifica_banco(contexto)
+    banco_existe, resultado = lembrete.verifica_banco(contexto.guild.name)
     if not banco_existe:
         await contexto.send(embed=resultado)
     else:
@@ -94,7 +95,7 @@ async def eia(contexto, *args):
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
-    banco_existe, resultado = lembrete.verifica_banco(contexto)
+    banco_existe, resultado = lembrete.verifica_banco(contexto.guild.name)
     if not banco_existe:
         await contexto.send(embed=resultado)
     else:
@@ -113,7 +114,7 @@ async def ed(contexto, *args):
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
-    banco_existe, resultado = lembrete.verifica_banco(contexto)
+    banco_existe, resultado = lembrete.verifica_banco(contexto.guild.name)
     if not banco_existe:
         await contexto.send(embed=resultado)
     else:
@@ -132,7 +133,7 @@ async def editar_dia(contexto, *args):
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
-    banco_existe, resultado = lembrete.verifica_banco(contexto)
+    banco_existe, resultado = lembrete.verifica_banco(contexto.guild.name)
     if not banco_existe:
         await contexto.send(embed=resultado)
     else:
@@ -144,19 +145,29 @@ async def editar_dia(contexto, *args):
         mensagem = await cliente.wait_for('message', check=check)
         mensagem = string.capwords(mensagem.content)
         await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
-'''
-@cliente.event
-async def avisa_animezada():
-    global kaburagi, servidor, bot_ativo
-    avisar = True
-    while True:
-        if (retorna_hora() == '20:00' or retorna_hora() == '22:30') and avisar:
-            avisar = False
-            await servidor.canal.send(servidor.cargo.mention)
-            await servidor.canal.send(embed=kaburagi.informar_anime_do_dia())
-        if retorna_hora() == '20:01' or retorna_hora() == "22:31":
-            avisar = True
-        await asyncio.sleep(1)
-'''
 
+
+@tasks.loop(hours=3)
+async def called_once_a_day():
+    message_channel = cliente.get_channel(793281337531301889)
+    servidor = cliente.get_guild(460678660559470592)
+    cargo = None
+    for role in servidor.roles:
+        if role.name == "Animezeiro":
+            cargo = role
+    banco_existe, resultado = lembrete.hoje(servidor.name)
+    if banco_existe:
+        print(f"Enviando para: {message_channel}")
+        await message_channel.send(cargo.mention)
+        await message_channel.send(embed=resultado)
+    else:
+        print("Função hoje retornou False")
+
+
+@called_once_a_day.before_loop
+async def before():
+    await cliente.wait_until_ready()
+    print("Terminou de Esperar")
+
+called_once_a_day.start()
 cliente.run('ODA4NzEzNTMzMzk4ODQzMzky.YCKjKw.52-rt_tB5bEAiZ5aRenQgguYPmY')

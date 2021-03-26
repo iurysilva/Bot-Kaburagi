@@ -32,8 +32,8 @@ class Lembrete:
                 self.nome_dos_bancos.append(arquivo)
         print('Servidores com lembretes: ', self.nome_dos_bancos, '\n')
 
-    def verifica_banco(self, contexto):
-        servidor = contexto.guild.name
+    def verifica_banco(self, nome_do_servidor):
+        servidor = nome_do_servidor
         print('Verificação de banco feita em: ', servidor)
         if servidor in self.nome_dos_bancos:
             print('banco %s existe\n' % servidor)
@@ -61,7 +61,7 @@ class Lembrete:
 
     def adicionar_lembrete(self, contexto, nome, dia, adicional="Nada"):
         print('Função adicionar lembrete')
-        banco_existe, resultado = self.verifica_banco(contexto)
+        banco_existe, resultado = self.verifica_banco(contexto.guild.name)
         banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
         cursor = banco.cursor()
         if not banco_existe:
@@ -79,7 +79,7 @@ class Lembrete:
 
     def remover_lembrete(self, contexto, nome):
         print('Função remover lembrete')
-        banco_existe, resultado = self.verifica_banco(contexto)
+        banco_existe, resultado = self.verifica_banco(contexto.guild.name)
         if banco_existe:
             banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
             cursor = banco.cursor()
@@ -93,7 +93,7 @@ class Lembrete:
 
     def mostra_lembretes(self, contexto):
         print('Função mostra lembretes')
-        banco_existe, resultado = self.verifica_banco(contexto)
+        banco_existe, resultado = self.verifica_banco(contexto.guild.name)
         if banco_existe:
             embed = Embed(title="Lembretes")
             banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
@@ -108,13 +108,13 @@ class Lembrete:
         else:
             return False, resultado
 
-    def hoje(self, contexto):
+    def hoje(self, nome_do_servidor):
         print('Função hoje')
-        banco_existe, resultado = self.verifica_banco(contexto)
+        banco_existe, resultado = self.verifica_banco(nome_do_servidor)
         if banco_existe:
             dia_da_semana = retorna_dia_da_semana()
             embed = Embed(title="Lembretes de %s:" % dia_da_semana)
-            banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
+            banco = sqlite3.connect(self.caminho + '/%s' % nome_do_servidor)
             cursor = banco.cursor()
             cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia_da_semana,))
             vazio = True
