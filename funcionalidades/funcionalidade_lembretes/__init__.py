@@ -1,0 +1,1 @@
+from funcionalidades.funcionalidade_lembretes.funcoes_auxiliares import retorna_dia_da_semana

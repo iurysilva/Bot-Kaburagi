@@ -2,12 +2,13 @@ import sqlite3
 import os
 from discord.embeds import Embed
 import string
+from funcionalidades.funcionalidade_lembretes import retorna_dia_da_semana
 
 
 class Lembrete:
     def __init__(self):
         self.nome_dos_bancos = []
-        self.caminho = 'funcionalidades/funcionalidade_lembretes'
+        self.caminho = 'funcionalidades/funcionalidade_lembretes/bancos'
         self.dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
         self.comandos = [["?lembretes", "Lista todos os lembretes do servidor."],
                     ["?adicionar_lembrete (nome) (dia) (informação adicional)",
@@ -23,7 +24,7 @@ class Lembrete:
 
     def atualizar_lista_de_bancos(self):
         for arquivo in os.listdir(self.caminho):
-            if arquivo != '__pycache__' and arquivo != 'lembretes.py':
+            if arquivo != '__pycache__':
                 self.nome_dos_bancos.append(arquivo)
         print('Servidores com lembretes: ', self.nome_dos_bancos, '\n')
 
@@ -96,9 +97,27 @@ class Lembrete:
             for dia in self.dias:
                 cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia,))
                 for lembrete in cursor.fetchall():
-                    print(lembrete)
+                    print('exibindo lembrete: ', lembrete)
                     embed.add_field(name=lembrete[0], value="Dia: %s\nInformação Adicional: %s" % (lembrete[1],
                     lembrete[2]), inline=False)
+            return True, embed
+        else:
+            return False, resultado
+
+    def hoje(self, contexto):
+        print('Função hoje')
+        banco_existe, resultado = self.verifica_banco(contexto)
+        if banco_existe:
+            embed = Embed(title="Lembretes de Hoje")
+            banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
+            cursor = banco.cursor()
+            dia_da_semana = retorna_dia_da_semana()
+            cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia_da_semana,))
+            for lembrete in cursor.fetchall():
+                print('exibindo lembrete: ', lembrete)
+                embed.add_field(name=lembrete[0], value="Dia: %s\nInformação Adicional: %s" % (lembrete[1],
+                                                                                               lembrete[2]),
+                                inline=False)
             return True, embed
         else:
             return False, resultado

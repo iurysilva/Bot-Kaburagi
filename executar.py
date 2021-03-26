@@ -7,7 +7,6 @@ cliente = commands.Bot(command_prefix='?')
 lembrete = Lembrete()
 lembrete.atualizar_lista_de_bancos()
 
-
 @cliente.event
 async def on_ready():
     print('Kaburagi Iniciado!')
@@ -16,10 +15,7 @@ async def on_ready():
 @cliente.command()
 async def lembretes(contexto):
     banco_existe, resultado = lembrete.mostra_lembretes(contexto)
-    if banco_existe:
-        await contexto.send(embed=resultado)
-    else:
-        await contexto.send(embed=resultado)
+    await contexto.send(embed=resultado)
 
 
 @cliente.command()
@@ -65,6 +61,14 @@ async def rl(contexto, *args):
 @cliente.command()
 async def ajuda(contexto):
     await contexto.send(embed=lembrete.ajuda())
+
+
+@cliente.command()
+async def hoje(contexto):
+    banco_existe, resultado = lembrete.hoje(contexto)
+    await contexto.send('%s' % contexto.author.mention)
+    await contexto.send(embed=resultado)
+
 '''
 @cliente.event
 async def avisa_animezada():
@@ -80,4 +84,4 @@ async def avisa_animezada():
         await asyncio.sleep(1)
 
 '''
-cliente.run('ODA4NzEzNTMzMzk4ODQzMzky.YCKjKw.52-rt_tB5bEAiZ5aRenQgguYPmY')
+cliente.run('ODA5MTkyNzQxNTg1NTUxNDEw.YCRhdw.bGqO9A5B2Q7Wr2_f0JDB7B6x0D8')
