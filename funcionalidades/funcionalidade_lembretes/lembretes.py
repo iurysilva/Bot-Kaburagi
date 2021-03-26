@@ -15,6 +15,9 @@ class Lembrete:
                      "Adiciona um lembrete, abreviação do comando: ?al."],
                     ["?remover_lembrete (nome)", "Remove um lembrete do servidor, abreviação do comando: ?rl."],
                          ["?hoje", "Exibe os lembretes correspondentes ao dia atual."]]
+        self.eia_esperando_mensagem = []
+        self.en_esperando_mensagem = []
+        self.edia_esperando_mensagem = []
 
     def ajuda(self):
         embed = Embed(title="Lista de Comandos:")
@@ -65,13 +68,13 @@ class Lembrete:
             print('Banco %s não existe, criando banco e inserindo...\n' % contexto.guild)
             cursor.execute("CREATE TABLE Lembretes (Nome text, Dia text, Adicional text)")
             cursor.execute("INSERT INTO Lembretes VALUES(?, ?, ?)", (nome, dia, adicional))
+            self.nome_dos_bancos.append(contexto.guild.name)
         else:
             print('Banco %s existe, inserindo...\n' % contexto.guild)
             cursor.execute("INSERT INTO Lembretes VALUES(?, ?, ?)", (nome, dia, adicional))
         banco.commit()
         embed = Embed(title="Lembrete Inserido")
         embed.add_field(name=nome, value="Dia: %s\nInformação Adicional: %s" % (dia, adicional))
-        self.nome_dos_bancos.append(contexto.guild.name)
         return embed
 
     def remover_lembrete(self, contexto, nome):
@@ -126,3 +129,23 @@ class Lembrete:
                 return False, embed
         else:
             return False, resultado
+
+    def editar_informacao_adicional(self, contexto, nome, mensagem):
+        print("Editando informação adicional de %s" % nome)
+        print("Mensagem = %s\n" % mensagem)
+        banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
+        cursor = banco.cursor()
+        cursor.execute("UPDATE Lembretes SET Adicional = (?) WHERE Nome = (?)", (mensagem, nome))
+        banco.commit()
+        embed = Embed(title="Lembrete Atualizado")
+        embed.add_field(name=nome, value="Informação Adicional: %s" % mensagem)
+        return embed
+
+    def verifica_se_nome_existe(self, contexto, nome):
+        banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
+        cursor = banco.cursor()
+        cursor.execute("SELECT * FROM Lembretes WHERE Nome=?", (nome,))
+        if not cursor.fetchall():
+            return False
+        else:
+            return True

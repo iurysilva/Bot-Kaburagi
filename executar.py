@@ -69,6 +69,39 @@ async def hoje(contexto):
     await contexto.send('%s' % contexto.author.mention)
     await contexto.send(embed=resultado)
 
+
+@cliente.command()
+async def editar_informacao_adicional(contexto, *args):
+    def check(mensagem):
+        return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
+
+    banco_existe, resultado = lembrete.verifica_banco(contexto)
+    if not banco_existe:
+        await contexto.send(embed=resultado)
+    else:
+        nome = string.capwords(' '.join(args))
+        await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
+        mensagem = await cliente.wait_for('message', check=check)
+        print(mensagem.content)
+        await contexto.send("ta bom")
+
+
+@cliente.command()
+async def eia(contexto, *args):
+    def check(mensagem):
+        return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
+
+    banco_existe, resultado = lembrete.verifica_banco(contexto)
+    if not banco_existe:
+        await contexto.send(embed=resultado)
+    else:
+        nome = string.capwords(' '.join(args))
+        if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
+            await contexto.send(embed=Embed(title="Informe um lembrete válido"))
+            return 0
+        await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
+        mensagem = await cliente.wait_for('message', check=check)
+        await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem.content))
 '''
 @cliente.event
 async def avisa_animezada():
@@ -82,6 +115,6 @@ async def avisa_animezada():
         if retorna_hora() == '20:01' or retorna_hora() == "22:31":
             avisar = True
         await asyncio.sleep(1)
-
 '''
+
 cliente.run('ODA4NzEzNTMzMzk4ODQzMzky.YCKjKw.52-rt_tB5bEAiZ5aRenQgguYPmY')
