@@ -51,8 +51,9 @@ class Lembrete:
         index = None
         for dia in self.dias:
             if dia in mensagem:
+                achou_index = True
                 index = mensagem.index(dia)
-        if not achou_index:
+        if achou_index:
             print('Dia encontrado na posição: ', index, '\n')
             return True, index
         else:
@@ -104,6 +105,7 @@ class Lembrete:
                     print('exibindo lembrete: ', lembrete)
                     embed.add_field(name=lembrete[0], value="Dia: %s\nInformação Adicional: %s" % (lembrete[1],
                     lembrete[2]), inline=False)
+            print('')
             return True, embed
         else:
             return False, resultado

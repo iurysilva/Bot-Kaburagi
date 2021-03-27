@@ -86,7 +86,6 @@ async def editar_informacao_adicional(contexto, *args):
             return 0
         await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
         mensagem = await cliente.wait_for('message', check=check)
-        mensagem = string.capwords(mensagem.content)
         await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem))
 
 
@@ -105,7 +104,6 @@ async def eia(contexto, *args):
             return 0
         await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
         mensagem = await cliente.wait_for('message', check=check)
-        mensagem = string.capwords(mensagem.content)
         await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem))
 
 
