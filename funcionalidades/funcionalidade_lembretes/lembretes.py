@@ -17,7 +17,9 @@ class Lembrete:
                          ["?hoje", "Exibe os lembretes correspondentes ao dia atual."],
                          ["?editar_informacao_adicional (nome)",
                           "Edita as informações adicionais de um lembrete, abreviação do comando: ?eia."],
-                         ["?editar_dia (nome)", "Edita o dia de um lembrete, abreviação do comando: ?ed."]]
+                         ["?editar_dia (nome)", "Edita o dia de um lembrete, abreviação do comando: ?ed."],
+                         ["?mensagens_diarias",
+                          "Informa os requisitos para implementar mensagens diarias no servidor, abreviação do comando: ?md."]]
 
     def ajuda(self):
         embed = Embed(title="Lista de Comandos:")

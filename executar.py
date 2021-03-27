@@ -148,23 +148,48 @@ async def editar_dia(contexto, *args):
         await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
 
 
+@cliente.command()
+async def mensagens_diarias(contexto):
+    mensagem = Embed(title="Para receber mensagens diárias dos lembretes no servidor, faça:")
+    mensagem.add_field(name="Crie um canal para o Kaburagi", value="O nome do canal deve ser: kaburagi", inline=False)
+    mensagem.add_field(name="Crie um cargo para o Kaburagi marcar", value="O nome do cargo deve ser: Esquecido",
+                       inline=False)
+    await contexto.send(embed=mensagem)
+
+
+@cliente.command()
+async def md(contexto):
+    mensagem = Embed(title="Para receber mensagens diárias dos lembretes no servidor, faça:")
+    mensagem.add_field(name="Crie um canal para o Kaburagi", value="O nome do canal deve ser: kaburagi", inline=False)
+    mensagem.add_field(name="Crie um cargo para o Kaburagi marcar", value="O nome do cargo deve ser: Esquecido",
+                       inline=False)
+    await contexto.send(embed=mensagem)
+
+
 @tasks.loop(minutes=1)
 async def called_once_a_day():
-    horarios_para_avisar = ['12:00', '17:00', '19:30']
+    horarios_para_avisar = ['12:00', '17:55', '19:30']
+    servidor = cliente.get_guild(460678660559470592)
     if retorna_hora() in horarios_para_avisar:
-        message_channel = cliente.get_channel(793281337531301889)
-        servidor = cliente.get_guild(460678660559470592)
+        message_channel = None
         cargo = None
         for role in servidor.roles:
-            if role.name == "Animezeiro":
+            if role.name == "Esquecido":
                 cargo = role
+        for canal in servidor.channels:
+            if canal.name == "kaburagi":
+                message_channel = canal
         banco_existe, resultado = lembrete.hoje(servidor.name)
-        if banco_existe:
+        if banco_existe and cargo and message_channel:
             print(f"Enviando para: {message_channel}")
             print(cargo)
             await message_channel.send(cargo.mention)
             await message_channel.send(embed=resultado)
         else:
+            if not cargo:
+                print('cargo não existe no servidor')
+            elif not message_channel:
+                print('canal não existe no servidor')
             print("Função hoje retornou False")
 
     else:
