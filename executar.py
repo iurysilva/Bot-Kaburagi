@@ -168,32 +168,32 @@ async def md(contexto):
 
 @tasks.loop(minutes=1)
 async def called_once_a_day():
-    horarios_para_avisar = ['12:00', '17:55', '19:30']
-    servidor = cliente.get_guild(460678660559470592)
-    if retorna_hora() in horarios_para_avisar:
-        message_channel = None
-        cargo = None
-        for role in servidor.roles:
-            if role.name == "Esquecido":
-                cargo = role
-        for canal in servidor.channels:
-            if canal.name == "kaburagi":
-                message_channel = canal
-        banco_existe, resultado = lembrete.hoje(servidor.name)
-        if banco_existe and cargo and message_channel:
-            print(f"Enviando para: {message_channel}")
-            print(cargo)
-            await message_channel.send(cargo.mention)
-            await message_channel.send(embed=resultado)
-        else:
-            if not cargo:
-                print('cargo não existe no servidor')
-            elif not message_channel:
-                print('canal não existe no servidor')
-            print("Função hoje retornou False")
+    horarios_para_avisar = ['12:00', '17:00', '19:29']
+    for servidor in cliente.guilds:
+        if retorna_hora() in horarios_para_avisar:
+            message_channel = None
+            cargo = None
+            for role in servidor.roles:
+                if role.name == "Esquecido":
+                    cargo = role
+            for canal in servidor.channels:
+                if canal.name == "kaburagi":
+                    message_channel = canal
+            banco_existe, resultado = lembrete.hoje(servidor.name)
+            if banco_existe and cargo and message_channel:
+                print(f"Enviando para: {message_channel}")
+                print(cargo)
+                await message_channel.send(cargo.mention)
+                await message_channel.send(embed=resultado)
+            else:
+                if not cargo:
+                    print('cargo não existe no servidor')
+                elif not message_channel:
+                    print('canal não existe no servidor')
+                print("Função hoje retornou False")
 
-    else:
-        print("Hora %s não é um horario para avisar" % retorna_hora())
+        else:
+            print("Hora %s não é um horario para avisar" % retorna_hora())
 
 
 @called_once_a_day.before_loop
