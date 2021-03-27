@@ -50,14 +50,16 @@ class Lembrete:
         achou_index = False
         index = None
         for dia in self.dias:
-            if dia in mensagem:
-                achou_index = True
-                index = mensagem.index(dia)
+            for palavra in range(len(mensagem)):
+                if dia == mensagem[palavra] and palavra != 0:
+                    achou_index = True
+                    index = palavra
+                    break
         if achou_index:
             print('Dia encontrado na posição: ', index, '\n')
             return True, index
         else:
-            print('Dia não encontrado\n')
+            print('Dia não encontrado na posição correta\n')
             return False, index
 
     def adicionar_lembrete(self, contexto, nome, dia, adicional="Nada"):

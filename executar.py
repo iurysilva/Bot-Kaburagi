@@ -24,13 +24,14 @@ async def lembretes(contexto):
 async def adicionar_lembrete(contexto, *args):
     flag, index_do_dia = lembrete.interpreta_mensagem(args)
     if flag:
-        dia = args[index_do_dia]
-        nome = ''.join(args[0:index_do_dia])
-        adicional = ''.join(args[index_do_dia+1:])
+        dia = string.capwords(args[index_do_dia])
+        nome = string.capwords(' '.join(args[0:index_do_dia]))
+        adicional = ' '.join(args[index_do_dia + 1:])
         resultado = lembrete.adicionar_lembrete(contexto, nome, dia, adicional)
         await contexto.send(embed=resultado)
     else:
-        await contexto.send(embed=Embed(title='Dia não encontrado na mensagem'))
+        await contexto.send(embed=Embed(title='Dia não encontrado na  posição correta, escreva no formato:\n' +
+                                              'Segunda, Terça, Quarta, Quinta, Sexta, Sábado ou Domingo.'))
 
 
 @cliente.command()
@@ -39,11 +40,12 @@ async def al(contexto, *args):
     if flag:
         dia = string.capwords(args[index_do_dia])
         nome = string.capwords(' '.join(args[0:index_do_dia]))
-        adicional = ' '.join(args[index_do_dia+1:])
+        adicional = ' '.join(args[index_do_dia + 1:])
         resultado = lembrete.adicionar_lembrete(contexto, nome, dia, adicional)
         await contexto.send(embed=resultado)
     else:
-        await contexto.send(embed=Embed(title='Dia não encontrado na mensagem'))
+        await contexto.send(embed=Embed(title='Dia não encontrado na  posição correta, escreva no formato:\n' +
+                                              'Segunda, Terça, Quarta, Quinta, Sexta, Sábado ou Domingo.'))
 
 
 @cliente.command()
@@ -146,9 +148,9 @@ async def editar_dia(contexto, *args):
         await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
 
 
-@tasks.loop(seconds=35)
+@tasks.loop(minutes=1)
 async def called_once_a_day():
-    horarios_para_avisar = ['12:00', '17:30', '19:30']
+    horarios_para_avisar = ['12:00', '17:00', '19:30']
     if retorna_hora() in horarios_para_avisar:
         message_channel = cliente.get_channel(793281337531301889)
         servidor = cliente.get_guild(460678660559470592)
@@ -159,6 +161,7 @@ async def called_once_a_day():
         banco_existe, resultado = lembrete.hoje(servidor.name)
         if banco_existe:
             print(f"Enviando para: {message_channel}")
+            print(cargo)
             await message_channel.send(cargo.mention)
             await message_channel.send(embed=resultado)
         else:

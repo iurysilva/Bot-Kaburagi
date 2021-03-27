@@ -8,7 +8,7 @@ def retorna_hora():
 
 
 def retorna_dia_da_semana():
-    dias_da_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado', 'Domingo']
+    dias_da_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
     data = datetime.date.today().today()
     if 0 < int(retorna_hora()[:2]) < 3:
         dia_da_semana_atual = dias_da_semana[data.weekday() - 1]
