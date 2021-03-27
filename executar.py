@@ -2,6 +2,7 @@ from discord.ext import commands, tasks
 from funcionalidades import Lembrete
 from discord.embeds import Embed
 import string
+from funcionalidades.funcionalidade_lembretes.funcoes_auxiliares import retorna_hora
 
 cliente = commands.Bot(command_prefix='?')
 lembrete = Lembrete()
@@ -145,21 +146,26 @@ async def editar_dia(contexto, *args):
         await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
 
 
-@tasks.loop(hours=3)
+@tasks.loop(seconds=35)
 async def called_once_a_day():
-    message_channel = cliente.get_channel(793281337531301889)
-    servidor = cliente.get_guild(460678660559470592)
-    cargo = None
-    for role in servidor.roles:
-        if role.name == "Animezeiro":
-            cargo = role
-    banco_existe, resultado = lembrete.hoje(servidor.name)
-    if banco_existe:
-        print(f"Enviando para: {message_channel}")
-        await message_channel.send(cargo.mention)
-        await message_channel.send(embed=resultado)
+    horarios_para_avisar = ['12:00', '17:30', '19:30']
+    if retorna_hora() in horarios_para_avisar:
+        message_channel = cliente.get_channel(793281337531301889)
+        servidor = cliente.get_guild(460678660559470592)
+        cargo = None
+        for role in servidor.roles:
+            if role.name == "Animezeiro":
+                cargo = role
+        banco_existe, resultado = lembrete.hoje(servidor.name)
+        if banco_existe:
+            print(f"Enviando para: {message_channel}")
+            await message_channel.send(cargo.mention)
+            await message_channel.send(embed=resultado)
+        else:
+            print("Função hoje retornou False")
+
     else:
-        print("Função hoje retornou False")
+        print("Hora %s não é um horario para avisar" % retorna_hora())
 
 
 @called_once_a_day.before_loop
