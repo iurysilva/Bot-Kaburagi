@@ -168,7 +168,7 @@ async def md(contexto):
 
 @tasks.loop(minutes=1)
 async def called_once_a_day():
-    horarios_para_avisar = ['09:00', '14:00', '16:30']
+    horarios_para_avisar = ['12:00', '20:00', '22:30']
     for servidor in cliente.guilds:
         if retorna_hora() in horarios_para_avisar:
             message_channel = None
