@@ -76,6 +76,8 @@ class Lembrete:
             self.nome_dos_bancos.append(contexto.guild.name)
         else:
             print('Banco %s existe, inserindo...\n' % contexto.guild)
+            if self.verifica_se_nome_existe(contexto, nome):
+                return Embed(title="Lembrete com esse nome já existe na lista")
             cursor.execute("INSERT INTO Lembretes VALUES(?, ?, ?)", (nome, dia, adicional))
         banco.commit()
         embed = Embed(title="Lembrete Inserido")
@@ -88,6 +90,8 @@ class Lembrete:
         if banco_existe:
             banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
             cursor = banco.cursor()
+            if not self.verifica_se_nome_existe(contexto, nome):
+                return False, "Lembrete com esse nome não existe na lista"
             cursor.execute('DELETE from Lembretes WHERE Nome = ?', (nome,))
             banco.commit()
             print('Dados removidos com sucesso\n')
