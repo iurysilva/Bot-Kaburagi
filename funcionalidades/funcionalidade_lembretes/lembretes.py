@@ -3,11 +3,15 @@ import os
 from discord.embeds import Embed
 import string
 from funcionalidades.funcionalidade_lembretes import retorna_dia_da_semana
+from servicos.repositorio import Lembretes
 
 
 class Lembrete:
-    def __init__(self):
+
+    def __init__(self, banco):
+
         self.nome_dos_bancos = []
+        self.repositorio = Lembretes(banco)
         self.caminho = 'funcionalidades/funcionalidade_lembretes/bancos'
         self.dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
         self.comandos = [["?lembretes", "Lista todos os lembretes do servidor."],
@@ -66,87 +70,62 @@ class Lembrete:
 
     def adicionar_lembrete(self, contexto, nome, dia, adicional="Nada"):
         print('Função adicionar lembrete')
-        banco_existe, resultado = self.verifica_banco(contexto.guild.name)
-        banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
-        cursor = banco.cursor()
-        if not banco_existe:
-            print('Banco %s não existe, criando banco e inserindo...\n' % contexto.guild)
-            cursor.execute("CREATE TABLE Lembretes (Nome text, Dia text, Adicional text)")
-            cursor.execute("INSERT INTO Lembretes VALUES(?, ?, ?)", (nome, dia, adicional))
-            self.nome_dos_bancos.append(contexto.guild.name)
+        self.repositorio.seta_banco(contexto.guild.id)
+        if self.repositorio.adiciona(nome, dia, adicional):
+            embed = Embed(title="Lembrete Inserido")
+            embed.add_field(name=nome, value="Dia: %s\nInformação Adicional: %s" % (dia, adicional))
+            return embed
         else:
-            print('Banco %s existe, inserindo...\n' % contexto.guild)
-            if self.verifica_se_nome_existe(contexto, nome):
-                return Embed(title="Lembrete com esse nome já existe na lista")
-            cursor.execute("INSERT INTO Lembretes VALUES(?, ?, ?)", (nome, dia, adicional))
-        banco.commit()
-        embed = Embed(title="Lembrete Inserido")
-        embed.add_field(name=nome, value="Dia: %s\nInformação Adicional: %s" % (dia, adicional))
-        return embed
+            return Embed(title="Lembrete com esse nome já existe na lista")
+
 
     def remover_lembrete(self, contexto, nome):
         print('Função remover lembrete')
-        banco_existe, resultado = self.verifica_banco(contexto.guild.name)
-        if banco_existe:
-            banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
-            cursor = banco.cursor()
-            if not self.verifica_se_nome_existe(contexto, nome):
-                return False, "Lembrete com esse nome não existe na lista"
-            cursor.execute('DELETE from Lembretes WHERE Nome = ?', (nome,))
-            banco.commit()
+        self.repositorio.seta_banco(contexto.guild.id)
+        if self.repositorio.remove_por_nome(nome):
             print('Dados removidos com sucesso\n')
             return True, "Lembrete para %s removido :)" % nome
         else:
-            print('Banco %s não existe\n')
-            return False, resultado
+            return False, "Lembrete com esse nome não existe na lista"
+
 
     def mostra_lembretes(self, contexto):
         print('Função mostra lembretes')
-        banco_existe, resultado = self.verifica_banco(contexto.guild.name)
-        if banco_existe:
-            embed = Embed(title="Lembretes")
-            banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
-            cursor = banco.cursor()
-            for dia in self.dias:
-                cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia,))
-                for lembrete in cursor.fetchall():
-                    print('exibindo lembrete: ', lembrete)
-                    embed.add_field(name=lembrete[0], value="Dia: %s\nInformação Adicional: %s" % (lembrete[1],
-                    lembrete[2]), inline=False)
-            print('')
+        self.repositorio.seta_banco(contexto.guild.id)
+        embed = Embed(title="Lembretes")
+        for dia in self.dias:
+            for lembrete in self.repositorio.busca_por_dia(dia):
+                print('exibindo lembrete: ', lembrete)
+                embed.add_field(name=lembrete['nome'], value="Dia: %s\nInformação Adicional: %s" % (lembrete['dia'],
+                                                                                               lembrete['adicional']),
+                                inline=False)
+        print()
+        return True, embed
+
+
+
+    def hoje(self, id):
+        print('Função hoje')
+        self.repositorio.seta_banco(id)
+        dia_da_semana = retorna_dia_da_semana()
+        embed = Embed(title="Lembretes de %s:" % dia_da_semana)
+        lembretes = self.repositorio.busca_por_dia(dia_da_semana)
+        vazio = True
+        for lembrete in lembretes:
+            vazio = False
+            print('exibindo lembrete: ', lembrete)
+            embed.add_field(name=lembrete['nome'], value="Informação Adicional: %s" % (lembrete['adicional']), inline=False)
+        if not vazio:
             return True, embed
         else:
-            return False, resultado
-
-    def hoje(self, nome_do_servidor):
-        print('Função hoje')
-        banco_existe, resultado = self.verifica_banco(nome_do_servidor)
-        if banco_existe:
-            dia_da_semana = retorna_dia_da_semana()
-            embed = Embed(title="Lembretes de %s:" % dia_da_semana)
-            banco = sqlite3.connect(self.caminho + '/%s' % nome_do_servidor)
-            cursor = banco.cursor()
-            cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia_da_semana,))
-            vazio = True
-            for lembrete in cursor.fetchall():
-                vazio = False
-                print('exibindo lembrete: ', lembrete)
-                embed.add_field(name=lembrete[0], value="Informação Adicional: %s" % (lembrete[2]), inline=False)
-            if not vazio:
-                return True, embed
-            else:
-                embed.title = "Não há lembretes para %s" % dia_da_semana
-                return False, embed
-        else:
-            return False, resultado
+            embed.title = "Não há lembretes para %s" % dia_da_semana
+            return False, embed
 
     def editar_informacao_adicional(self, contexto, nome, mensagem):
         print("Editando informação adicional de %s" % nome)
         print("Mensagem = %s\n" % mensagem)
-        banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
-        cursor = banco.cursor()
-        cursor.execute("UPDATE Lembretes SET Adicional = (?) WHERE Nome = (?)", (mensagem, nome))
-        banco.commit()
+        self.repositorio.seta_banco(contexto.guild.id)
+        self.repositorio.edita_informacao_adicional(mensagem, nome)
         embed = Embed(title="Lembrete Atualizado")
         embed.add_field(name=nome, value="Informação Adicional: %s" % mensagem)
         return embed
@@ -156,19 +135,16 @@ class Lembrete:
         print("Dia = %s\n" % dia)
         if dia not in self.dias:
             return Embed(title="Dia inválido")
-        banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
-        cursor = banco.cursor()
-        cursor.execute("UPDATE Lembretes SET Dia = (?) WHERE Nome = (?)", (dia, nome))
-        banco.commit()
+        self.repositorio.seta_banco(contexto.guild.id)
+        self.repositorio.edita_dia(dia, nome)
         embed = Embed(title="Lembrete Atualizado")
         embed.add_field(name=nome, value="Dia: %s" % dia)
         return embed
 
     def verifica_se_nome_existe(self, contexto, nome):
-        banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
-        cursor = banco.cursor()
-        cursor.execute("SELECT * FROM Lembretes WHERE Nome=?", (nome,))
-        if not cursor.fetchall():
+
+        self.repositorio.seta_banco(contexto.guild.id)
+        if not self.repositorio.busca_por_nome(nome):
             return False
         else:
             return True
