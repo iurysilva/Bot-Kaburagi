@@ -2,12 +2,10 @@ from discord.ext import commands, tasks
 from funcionalidades import Lembrete
 from discord.embeds import Embed
 import string
-import servicos
 from funcionalidades.funcionalidade_lembretes.funcoes_auxiliares import retorna_hora
 
 cliente = commands.Bot(command_prefix='?')
-conexao = servicos.repositorio.pega_conexao()
-lembrete = Lembrete(conexao)
+lembrete = Lembrete()
 lembrete.atualizar_lista_de_bancos()
 
 
@@ -71,7 +69,7 @@ async def ajuda(contexto):
 
 @cliente.command()
 async def hoje(contexto):
-    banco_existe, resultado = lembrete.hoje(contexto.guild.id)
+    banco_existe, resultado = lembrete.hoje(contexto.guild.name)
     await contexto.send('%s' % contexto.author.mention)
     await contexto.send(embed=resultado)
 
@@ -81,39 +79,73 @@ async def editar_informacao_adicional(contexto, *args):
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
-
-    nome = string.capwords(' '.join(args))
-    if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
-        await contexto.send(embed=Embed(title="Informe um lembrete válido"))
-        return 0
-    await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
-    mensagem = await cliente.wait_for('message', check=check)
-    await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem.content))
+    banco_existe, resultado = lembrete.verifica_banco(contexto.guild.name)
+    if not banco_existe:
+        await contexto.send(embed=resultado)
+    else:
+        nome = string.capwords(' '.join(args))
+        if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
+            await contexto.send(embed=Embed(title="Informe um lembrete válido"))
+            return 0
+        await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
+        mensagem = await cliente.wait_for('message', check=check)
+        await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem.content))
 
 
 @cliente.command()
 async def eia(contexto, *args):
-    await editar_informacao_adicional(contexto, *args)
-
-@cliente.command()
-async def ed(contexto, *args):
-
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
-    nome = string.capwords(' '.join(args))
-    if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
-        await contexto.send(embed=Embed(title="Informe um lembrete válido"))
-        return 0
-    await contexto.send(embed=Embed(title="Para qual dia devo mudar %s?" % nome))
-    mensagem = await cliente.wait_for('message', check=check)
-    mensagem = string.capwords(mensagem.content)
-    await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
+    banco_existe, resultado = lembrete.verifica_banco(contexto.guild.name)
+    if not banco_existe:
+        await contexto.send(embed=resultado)
+    else:
+        nome = string.capwords(' '.join(args))
+        if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
+            await contexto.send(embed=Embed(title="Informe um lembrete válido"))
+            return 0
+        await contexto.send(embed=Embed(title="O que devo colocar nas informações adicionais de %s?" % nome))
+        mensagem = await cliente.wait_for('message', check=check)
+        await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, mensagem.content))
+
+
+@cliente.command()
+async def ed(contexto, *args):
+    def check(mensagem):
+        return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
+
+    banco_existe, resultado = lembrete.verifica_banco(contexto.guild.name)
+    if not banco_existe:
+        await contexto.send(embed=resultado)
+    else:
+        nome = string.capwords(' '.join(args))
+        if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
+            await contexto.send(embed=Embed(title="Informe um lembrete válido"))
+            return 0
+        await contexto.send(embed=Embed(title="Para qual dia devo mudar %s?" % nome))
+        mensagem = await cliente.wait_for('message', check=check)
+        mensagem = string.capwords(mensagem.content)
+        await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
 
 
 @cliente.command()
 async def editar_dia(contexto, *args):
-    await ed(contexto, *args)
+    def check(mensagem):
+        return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
+
+    banco_existe, resultado = lembrete.verifica_banco(contexto.guild.name)
+    if not banco_existe:
+        await contexto.send(embed=resultado)
+    else:
+        nome = string.capwords(' '.join(args))
+        if not args or not lembrete.verifica_se_nome_existe(contexto, nome):
+            await contexto.send(embed=Embed(title="Informe um lembrete válido"))
+            return 0
+        await contexto.send(embed=Embed(title="Para qual dia devo mudar %s?" % nome))
+        mensagem = await cliente.wait_for('message', check=check)
+        mensagem = string.capwords(mensagem.content)
+        await contexto.send(embed=lembrete.editar_dia(contexto, nome, mensagem))
 
 
 @cliente.command()
@@ -147,7 +179,7 @@ async def called_once_a_day():
             for canal in servidor.channels:
                 if canal.name == "kaburagi":
                     message_channel = canal
-            banco_existe, resultado = lembrete.hoje(servidor.id)
+            banco_existe, resultado = lembrete.hoje(servidor.name)
             if banco_existe and cargo and message_channel:
                 print(f"Enviando para: {message_channel}")
                 print(cargo)
