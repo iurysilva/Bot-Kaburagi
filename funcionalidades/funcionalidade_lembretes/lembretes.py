@@ -10,17 +10,17 @@ class Lembrete:
         self.nome_dos_bancos = []
         self.caminho = 'funcionalidades/funcionalidade_lembretes/bancos'
         self.dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
-        self.comandos = [["?lembretes", "Lista todos os lembretes do servidor."],
-                    ["?adicionar_lembrete (nome) (dia) (informação adicional)",
-                     "Adiciona um lembrete, abreviação do comando: ?al."],
-                    ["?remover_lembrete (nome)", "Remove um lembrete do servidor, abreviação do comando: ?rl."],
-                         ["?hoje", "Exibe os lembretes correspondentes ao dia atual."],
-                         ["?editar_informacao_adicional (nome)",
-                          "Edita as informações adicionais de um lembrete, abreviação do comando: ?eia."],
-                         ["?editar_dia (nome)", "Edita o dia de um lembrete, abreviação do comando: ?ed."],
-                         ["?mensagens_diarias",
-                          "Informa os requisitos para implementar mensagens diarias no servidor, abreviação do comando: ?md."]]
-
+        self.comandos = [["/lembretes", "Lista todos os lembretes do servidor."],
+                    ["/adicionar_lembrete (nome) (dia) (informação adicional)",
+                     "Adiciona um lembrete"],
+                    ["/remover_lembrete (nome)", "Remove um lembrete do servidor."],
+                         ["/hoje", "Exibe os lembretes correspondentes ao dia atual."],
+                         ["/editar_informacao_adicional (nome)",
+                          "Edita as informações adicionais de um lembrete."],
+                         ["/editar_dia (nome)", "Edita o dia de um lembrete."],
+                         ["/mensagens_diarias",
+                          "Informa os requisitos para implementar mensagens diarias no servidor."]]
+        
     def ajuda(self):
         embed = Embed(title="Lista de Comandos:")
         comandos = self.comandos
