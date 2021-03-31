@@ -2,7 +2,7 @@ from discord.ext import commands, tasks
 from funcionalidades import Lembrete
 from discord.embeds import Embed
 from discord_slash import SlashCommand
-from discord_slash.utils.manage_commands import create_option
+from discord_slash.utils.manage_commands import create_option, create_choice
 import string
 import servicos
 from funcionalidades.funcionalidade_lembretes.funcoes_auxiliares import retorna_hora
@@ -40,7 +40,37 @@ async def _lembretes(contexto):
                  name="dia",
                  description="Dia no qual você quer ser lembrado.",
                  option_type=3,
-                 required=True
+                 required=True,
+                 choices=[
+                  create_choice(
+                    name="Segunda-Feira",
+                    value="Segunda"
+                  ),
+                  create_choice(
+                    name="Terça-Feira",
+                    value="Terça"
+                  ),
+                  create_choice(
+                    name="Quarta-Feira",
+                    value="Quarta"
+                  ),
+                  create_choice(
+                    name="Quinta-Feira",
+                    value="Quinta"
+                  ),
+                  create_choice(
+                    name="Sexta-Feira",
+                    value="Sexta"
+                  ),
+                  create_choice(
+                    name="Sábado",
+                    value="Sábado"
+                  ),
+                  create_choice(
+                    name="Domingo",
+                    value="Domingo"
+                  ),
+                ]
                ),
                  create_option(
                  name="adicional",
@@ -129,7 +159,37 @@ async def _editar_informacao_adicional(contexto, nome):
                  name="nome",
                  description="Nome do lembrete a ser editado.",
                  option_type=3,
-                 required=True
+                 required=True,
+                 choices=[
+                  create_choice(
+                    name="Segunda-Feira",
+                    value="Segunda"
+                  ),
+                  create_choice(
+                    name="Terça-Feira",
+                    value="Terça"
+                  ),
+                  create_choice(
+                    name="Quarta-Feira",
+                    value="Quarta"
+                  ),
+                  create_choice(
+                    name="Quinta-Feira",
+                    value="Quinta"
+                  ),
+                  create_choice(
+                    name="Sexta-Feira",
+                    value="Sexta"
+                  ),
+                  create_choice(
+                    name="Sábado",
+                    value="Sábado"
+                  ),
+                  create_choice(
+                    name="Domingo",
+                    value="Domingo"
+                  ),
+                ]
                ),
              ])
 async def _editar_dia(contexto, nome):
