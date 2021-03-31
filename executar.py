@@ -121,7 +121,7 @@ async def _ajuda(contexto):
              description="Exibe os lembretes correspondentes ao dia atual."
              )
 async def _hoje(contexto):
-    banco_existe, resultado = lembrete.hoje(contexto.guild.id)
+    banco_existe, resultado = lembrete.hoje(contexto.guild.name)
     await contexto.send('%s' % contexto.author.mention)
     await contexto.send(embed=resultado)
 
@@ -238,7 +238,7 @@ async def called_once_a_day():
             for canal in servidor.channels:
                 if canal.name == "kaburagi":
                     message_channel = canal
-            banco_existe, resultado = lembrete.hoje(servidor.id)
+            banco_existe, resultado = lembrete.hoje(servidor.name)
             if banco_existe and cargo and message_channel:
                 print(f"Enviando para: {message_channel}")
                 print(cargo)
