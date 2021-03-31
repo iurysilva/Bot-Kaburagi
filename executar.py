@@ -104,7 +104,7 @@ async def _adicionar_lembrete(contexto, *args):
                )
              ])
 async def _remover_lembrete(contexto, nome):
-    removido, mensagem = lembrete.remover_lembrete(contexto, nome)
+    removido, mensagem = lembrete.remover_lembrete(contexto, string.capwords(nome))
     await contexto.send(embed=Embed(title='%s' % mensagem))
 
 
@@ -122,7 +122,6 @@ async def _ajuda(contexto):
              )
 async def _hoje(contexto):
     banco_existe, resultado = lembrete.hoje(contexto.guild.name)
-    await contexto.send('%s' % contexto.author.mention)
     await contexto.send(embed=resultado)
 
 
@@ -147,11 +146,11 @@ async def _editar_informacao_adicional(contexto, nome, informacao):
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
-    if not lembrete.verifica_se_nome_existe(contexto, nome):
+    if not lembrete.verifica_se_nome_existe(contexto, string.capwords(nome)):
         await contexto.send(embed=Embed(title="Informe um lembrete válido"))
         return 0
     
-    await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, nome, informacao))
+    await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, string.capwords(nome), informacao))
 
 
 @slash.slash(name="keditar_dia", 
@@ -206,11 +205,11 @@ async def _editar_dia(contexto, nome, dia):
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
-    if not lembrete.verifica_se_nome_existe(contexto, nome):
+    if not lembrete.verifica_se_nome_existe(contexto, string.capwords(nome)):
         await contexto.send(embed=Embed(title="Informe um lembrete válido"))
         return 0
       
-    await contexto.send(embed=lembrete.editar_dia(contexto, nome, dia))
+    await contexto.send(embed=lembrete.editar_dia(contexto, string.capwords(nome), dia))
 
 
 @slash.slash(name="kmensagens_diarias", 
