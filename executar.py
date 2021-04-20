@@ -72,24 +72,16 @@ async def _lembretes(contexto):
                 ]
                ),
                  create_option(
-                 name="informação_adicional",
+                 name="informacao_adicional",
                  description="Alguma informação adicional para o lembrete.",
                  option_type=3,
                  required=False
                ),
              ])
-async def _adicionar_lembrete(contexto, *args):
-    flag, index_do_dia = lembrete.interpreta_mensagem(args)
-    if flag:
-        dia = string.capwords(args[index_do_dia])
-        nome = string.capwords(' '.join(args[0:index_do_dia]))
-        adicional = ' '.join(args[index_do_dia + 1:])
-        resultado = lembrete.adicionar_lembrete(contexto, nome, dia, adicional)
-        await contexto.send(embed=resultado)
-    else:
-        await contexto.send(embed=Embed(title='Dia não encontrado na  posição correta, escreva no formato:\n' +
-                                              'Segunda, Terça, Quarta, Quinta, Sexta, Sábado ou Domingo.'))
-
+async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional):
+    nome = string.capwords(nome)
+    resultado = lembrete.adicionar_lembrete(contexto, nome, dia, informacao_adicional)
+    await contexto.send(embed=resultado)
 
 
 @slash.slash(name="kremover_lembrete", 
@@ -136,13 +128,13 @@ async def _hoje(contexto):
                  required=True
                ),
                  create_option(
-                 name="informação_adicional",
+                 name="informacao_adicional",
                  description="Nova informação adicional para o lembrete.",
                  option_type=3,
                  required=True
                ),
              ])
-async def _editar_informacao_adicional(contexto, nome, informacao):
+async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
     def check(mensagem):
         return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
 
@@ -150,7 +142,8 @@ async def _editar_informacao_adicional(contexto, nome, informacao):
         await contexto.send(embed=Embed(title="Informe um lembrete válido"))
         return 0
     
-    await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, string.capwords(nome), informacao))
+    await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, string.capwords(nome),
+                                                                   informacao_adicional))
 
 
 @slash.slash(name="keditar_dia", 
