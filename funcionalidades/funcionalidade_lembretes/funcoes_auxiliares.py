@@ -12,9 +12,6 @@ def retorna_hora():
 
 def retorna_dia_da_semana():
     dias_da_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
-    data = date.today().today()
-    if 0 < int(retorna_hora()[:2]) < 3:
-        dia_da_semana_atual = dias_da_semana[data.weekday() - 1]
-    else:
-        dia_da_semana_atual = dias_da_semana[data.weekday()]
-    return dia_da_semana_atual
+    fuso_horario = timezone('America/Sao_Paulo')
+    data = datetime.now().astimezone(fuso_horario).date().weekday()
+    return dias_da_semana[data]
