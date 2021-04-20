@@ -19,9 +19,48 @@ async def on_ready():
 
 @slash.slash(name="klembretes", 
              guild_ids=[460678660559470592], 
-             description="Lista todos os lembretes do servidor.")
-async def _lembretes(contexto):
-    banco_existe, resultado = lembrete.mostra_lembretes(contexto)
+             description="Lista os lembretes do servidor.",
+             options=[
+               create_option(
+                 name="dia",
+                 description="Lembretes de um dia específico.",
+                 option_type=3,
+                 required=False,
+                 choices=[
+                  create_choice(
+                    name="Segunda-Feira",
+                    value="Segunda"
+                  ),
+                  create_choice(
+                    name="Terça-Feira",
+                    value="Terça"
+                  ),
+                  create_choice(
+                    name="Quarta-Feira",
+                    value="Quarta"
+                  ),
+                  create_choice(
+                    name="Quinta-Feira",
+                    value="Quinta"
+                  ),
+                  create_choice(
+                    name="Sexta-Feira",
+                    value="Sexta"
+                  ),
+                  create_choice(
+                    name="Sábado",
+                    value="Sábado"
+                  ),
+                  create_choice(
+                    name="Domingo",
+                    value="Domingo"
+                  ),
+                ]
+               ),
+             ]
+             )
+async def _lembretes(contexto,dia=None):
+    banco_existe, resultado = lembrete.mostra_lembretes(contexto,dia)
     await contexto.send(embed=resultado)
 
 

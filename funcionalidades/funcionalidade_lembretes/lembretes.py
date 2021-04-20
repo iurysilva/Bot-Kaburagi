@@ -100,19 +100,27 @@ class Lembrete:
             print('Banco %s não existe\n')
             return False, resultado
 
-    def mostra_lembretes(self, contexto):
+    def mostra_lembretes(self, contexto, dia=None):
         print('Função mostra lembretes')
         banco_existe, resultado = self.verifica_banco(contexto.guild.name)
         if banco_existe:
-            embed = Embed(title="Lembretes")
             banco = sqlite3.connect(self.caminho + '/%s' % contexto.guild)
             cursor = banco.cursor()
-            for dia in self.dias:
+            if dia:
+                embed = Embed(title="Lembretes de {}".format(dia))
                 cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia,))
                 for lembrete in cursor.fetchall():
                     print('exibindo lembrete: ', lembrete)
                     embed.add_field(name=lembrete[0], value="Dia: %s\nInformação Adicional: %s" % (lembrete[1],
                     lembrete[2]), inline=False)
+            else:
+                embed = Embed(title="Lembretes")
+                for dia in self.dias:
+                    cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia,))
+                    for lembrete in cursor.fetchall():
+                        print('exibindo lembrete: ', lembrete)
+                        embed.add_field(name=lembrete[0], value="Dia: %s\nInformação Adicional: %s" % (lembrete[1],
+                        lembrete[2]), inline=False)
             print('')
             return True, embed
         else:
