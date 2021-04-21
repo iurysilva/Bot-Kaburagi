@@ -265,12 +265,16 @@ async def called_once_a_day():
             for canal in servidor.channels:
                 if canal.name == "kaburagi":
                     message_channel = canal
-            resultado = lembrete.mostra_lembretes(servidor.name, dia=retorna_dia_da_semana())
+            dia_da_semana = retorna_dia_da_semana()
+            resultado = lembrete.mostra_lembretes(servidor.name, dia=dia_da_semana)
             if verifica_banco(servidor.name) and cargo and message_channel:
-                print(f"Enviando para: {message_channel}")
-                print(cargo)
-                await message_channel.send(cargo.mention)
-                await message_channel.send(embed=resultado)
+                if resultado.title != 'Não há lembretes para %s' % dia_da_semana:
+                    print(f"Enviando para: {message_channel}")
+                    print(cargo)
+                    await message_channel.send(cargo.mention)
+                    await message_channel.send(embed=resultado)
+                else:
+                    print("Não há lembretes para %s" % dia_da_semana)
             else:
                 if not cargo:
                     print('cargo não existe no servidor')
