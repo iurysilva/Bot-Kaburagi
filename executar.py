@@ -4,12 +4,13 @@ from discord.embeds import Embed
 from discord_slash import SlashCommand
 from discord_slash.utils.manage_commands import create_option, create_choice
 import string
-from funcionalidades.funcionalidade_lembretes.funcoes_auxiliares import retorna_hora
+from funcionalidades.funcionalidade_lembretes.informacoes_sobre_tempo import retorna_hora
+from funcionalidades.funcionalidade_lembretes.informacoes_sobre_tempo import retorna_dia_da_semana
+from funcionalidades.funcionalidade_lembretes.manipulacao_de_banco import verifica_banco
 
 cliente = commands.Bot(command_prefix='?')
 slash = SlashCommand(cliente, sync_commands=True)
 lembrete = Lembrete()
-lembrete.atualizar_lista_de_bancos()
 
 
 @cliente.event
@@ -59,8 +60,9 @@ async def on_ready():
                ),
              ]
              )
-async def _lembretes(contexto,dia=None):
-    banco_existe, resultado = lembrete.mostra_lembretes(contexto,dia)
+async def _lembretes(contexto, dia=None):
+    nome_do_servidor = contexto.guild.name
+    resultado = lembrete.mostra_lembretes(nome_do_servidor, dia)
     await contexto.send(embed=resultado)
 
 
@@ -119,7 +121,8 @@ async def _lembretes(contexto,dia=None):
              ])
 async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional):
     nome = string.capwords(nome)
-    resultado = lembrete.adicionar_lembrete(contexto, nome, dia, informacao_adicional)
+    nome_do_servidor = contexto.guild.name
+    resultado = lembrete.adicionar_lembrete(nome_do_servidor, nome, dia, informacao_adicional)
     await contexto.send(embed=resultado)
 
 
@@ -135,8 +138,10 @@ async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional):
                )
              ])
 async def _remover_lembrete(contexto, nome):
-    removido, mensagem = lembrete.remover_lembrete(contexto, string.capwords(nome))
-    await contexto.send(embed=Embed(title='%s' % mensagem))
+    nome = string.capwords(nome)
+    nome_do_servidor = contexto.guild.name
+    resultado = lembrete.remover_lembrete(nome_do_servidor, nome)
+    await contexto.send(embed=resultado)
 
 
 @slash.slash(name="kajuda", 
@@ -152,7 +157,8 @@ async def _ajuda(contexto):
              description="Exibe os lembretes correspondentes ao dia atual."
              )
 async def _hoje(contexto):
-    banco_existe, resultado = lembrete.hoje(contexto.guild.name)
+    dia = retorna_dia_da_semana()
+    resultado = lembrete.mostra_lembretes(contexto.guild.name, dia)
     await contexto.send(embed=resultado)
 
 
@@ -174,15 +180,10 @@ async def _hoje(contexto):
                ),
              ])
 async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
-    def check(mensagem):
-        return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
-
-    if not lembrete.verifica_se_nome_existe(contexto, string.capwords(nome)):
-        await contexto.send(embed=Embed(title="Informe um lembrete válido"))
-        return 0
-    
-    await contexto.send(embed=lembrete.editar_informacao_adicional(contexto, string.capwords(nome),
-                                                                   informacao_adicional))
+    nome = string.capwords(nome)
+    nome_do_servidor = contexto.guild.name
+    resultado = lembrete.editar_informacao_adicional(nome_do_servidor, nome, informacao_adicional)
+    await contexto.send(embed=resultado)
 
 
 @slash.slash(name="keditar_dia", 
@@ -233,15 +234,10 @@ async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
                ),
              ])
 async def _editar_dia(contexto, nome, dia):
-
-    def check(mensagem):
-        return contexto.author == mensagem.author and mensagem.channel == mensagem.channel
-
-    if not lembrete.verifica_se_nome_existe(contexto, string.capwords(nome)):
-        await contexto.send(embed=Embed(title="Informe um lembrete válido"))
-        return 0
-      
-    await contexto.send(embed=lembrete.editar_dia(contexto, string.capwords(nome), dia))
+    nome = string.capwords(nome)
+    nome_do_servidor = contexto.guild.name
+    resultado = lembrete.editar_dia(nome_do_servidor, nome, dia)
+    await contexto.send(embed=resultado)
 
 
 @slash.slash(name="kmensagens_diarias", 
@@ -269,8 +265,8 @@ async def called_once_a_day():
             for canal in servidor.channels:
                 if canal.name == "kaburagi":
                     message_channel = canal
-            banco_existe, resultado = lembrete.hoje(servidor.name)
-            if banco_existe and cargo and message_channel:
+            resultado = lembrete.mostra_lembretes(servidor.name, dia=retorna_dia_da_semana())
+            if verifica_banco(servidor.name) and cargo and message_channel:
                 print(f"Enviando para: {message_channel}")
                 print(cargo)
                 await message_channel.send(cargo.mention)
