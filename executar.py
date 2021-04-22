@@ -62,7 +62,7 @@ async def on_ready():
              )
 async def _lembretes(contexto, dia=None):
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.mostra_lembretes(nome_do_servidor, dia)
+    resultado = lembrete.mostra_lembretes(nome_do_servidor, dia, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -271,8 +271,7 @@ async def called_once_a_day():
                 if resultado.title != 'Não há lembretes para %s' % dia_da_semana:
                     print(f"Enviando para: {message_channel}")
                     print(cargo)
-                    await message_channel.send(cargo.mention)
-                    await message_channel.send(embed=resultado)
+                    await message_channel.send(cargo.mention, embed=resultado)
                 else:
                     print("Não há lembretes para %s" % dia_da_semana)
             else:
