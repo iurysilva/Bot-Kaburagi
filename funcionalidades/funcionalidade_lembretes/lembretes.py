@@ -1,9 +1,9 @@
+from funcionalidades.funcionalidade_lembretes import retorna_data_hora
 from funcionalidades.funcionalidade_lembretes import listar_lembretes_por_dia
 from funcionalidades.funcionalidade_lembretes import verifica_banco
 from funcionalidades.funcionalidade_lembretes import acessar_banco
 from funcionalidades.funcionalidade_lembretes import verifica_se_nome_ja_existe
 from discord.embeds import Embed
-import string
 
 
 class Lembrete:
@@ -27,21 +27,32 @@ class Lembrete:
             embed.add_field(name=comando[0], value=comando[1], inline=False)
         return embed
 
-    def mostra_lembretes(self, nome_do_servidor, dia=None):
+    def mostra_lembretes(self, nome_do_servidor, dia=None, autor=None):
         print('Função mostra lembretes')
         banco_existe = verifica_banco(nome_do_servidor)
+        dia_especifico = False
         if banco_existe:
             banco = acessar_banco(nome_do_servidor)
             cursor = banco.cursor()
             if dia:
-                embed = Embed(title="Lembretes de {}".format(dia))
-                embed = listar_lembretes_por_dia(dia, cursor, embed)
+                dia_especifico = True
+                embed = Embed(title="Lembretes de **{}**".format(dia))
+                embed = listar_lembretes_por_dia(dia, cursor, embed, dia_especifico)
+                if autor:
+                    embed.set_author(name=autor.display_name,icon_url=autor.avatar_url)
+                embed.set_footer(text='Kaburagi',icon_url='https://i.imgur.com/sDhQT5O.png')
+                embed.timestamp = retorna_data_hora()
                 if not embed.fields:
-                    return Embed(title="Não há lembretes para %s" % dia)
+                    return Embed(title="Não há lembretes para **%s**" % dia)
             else:
-                embed = Embed(title="Lembretes")
+                embed = Embed(title="**Lembretes**")
+                
+                if autor: 
+                    embed.set_author(name=autor.display_name,icon_url=autor.avatar_url)
+                embed.set_footer(text='Kaburagi',icon_url='https://i.imgur.com/sDhQT5O.png')
+                embed.timestamp = retorna_data_hora()
                 for dia in self.dias:
-                    embed = listar_lembretes_por_dia(dia, cursor, embed)
+                    embed = listar_lembretes_por_dia(dia, cursor, embed, dia_especifico)
                 if not embed.fields:
                     return Embed(title="Não há lembretes neste servidor")
             print("Mostra lembretes finalizada\n")

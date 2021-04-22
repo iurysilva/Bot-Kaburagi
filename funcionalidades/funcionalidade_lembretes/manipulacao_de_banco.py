@@ -34,10 +34,19 @@ def verifica_se_nome_ja_existe(nome_do_servidor, nome):
         return True
 
 
-def listar_lembretes_por_dia(dia, cursor, embed):
+def listar_lembretes_por_dia(dia, cursor, embed, dia_especifico):
     cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (dia,))
-    for lembrete in cursor.fetchall():
-        print('acessando lembrete: ', lembrete)
-        descricao = "Dia: %s\nInformação Adicional: %s" % (lembrete[1], lembrete[2])
-        embed.add_field(name=lembrete[0], value=descricao, inline=False)
+    lembretes_dia = cursor.fetchall()
+    numero_lembretes = len(lembretes_dia)
+
+    if lembretes_dia:
+        if dia_especifico:
+            embed.description = 'Há {} lembrete(s)'.format(numero_lembretes)
+        else:
+            embed = embed.add_field(name=dia,value='Há {} lembrete(s)'.format(numero_lembretes),inline=False)
+    
+    for lembrete in lembretes_dia:
+        descricao = "*Informação: %s*" % (lembrete[2])
+        #descricao = "Dia: %s\nInformação Adicional: %s" % (lembrete[1], lembrete[2])
+        embed.add_field(name=lembrete[0], value=descricao, inline=True)
     return embed
