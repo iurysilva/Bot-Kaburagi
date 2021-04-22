@@ -2,6 +2,13 @@ from datetime import datetime, date
 from pytz import timezone
 
 
+def retorna_data_hora():
+    data_e_hora = datetime.now()
+    fuso_horario = timezone('America/Sao_Paulo')
+    data_e_hora = data_e_hora.astimezone(fuso_horario)
+    return data_e_hora
+
+
 def retorna_hora():
     data_e_hora = datetime.now()
     fuso_horario = timezone('America/Sao_Paulo')
