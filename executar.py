@@ -6,6 +6,7 @@ from discord_slash.utils.manage_commands import create_option, create_choice
 import string
 from funcionalidades.funcionalidade_lembretes.informacoes_sobre_tempo import retorna_hora
 from funcionalidades.funcionalidade_lembretes.informacoes_sobre_tempo import retorna_dia_da_semana
+from funcionalidades.funcionalidade_lembretes.manipulacao_de_embed import adiciona_info
 from funcionalidades.funcionalidade_lembretes.manipulacao_de_banco import verifica_banco
 
 cliente = commands.Bot(command_prefix='?')
@@ -119,10 +120,10 @@ async def _lembretes(contexto, dia=None):
                  required=False
                ),
              ])
-async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional):
+async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.adicionar_lembrete(nome_do_servidor, nome, dia, informacao_adicional)
+    resultado = lembrete.adicionar_lembrete(nome_do_servidor, nome, dia, informacao_adicional, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -140,7 +141,7 @@ async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional):
 async def _remover_lembrete(contexto, nome):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.remover_lembrete(nome_do_servidor, nome)
+    resultado = lembrete.remover_lembrete(nome_do_servidor, nome, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -149,7 +150,9 @@ async def _remover_lembrete(contexto, nome):
              description="Exibe todos os comandos e suas descrições."
              )
 async def _ajuda(contexto):
-    await contexto.send(embed=lembrete.ajuda())
+    embed = lembrete.ajuda()
+    embed = adiciona_info(embed, contexto.author)
+    await contexto.send(embed=embed)
 
 
 @slash.slash(name="khoje", 
@@ -158,8 +161,8 @@ async def _ajuda(contexto):
              )
 async def _hoje(contexto):
     dia = retorna_dia_da_semana()
-    resultado = lembrete.mostra_lembretes(contexto.guild.name, dia)
-    await contexto.send(embed=resultado)
+    embed = lembrete.mostra_lembretes(contexto.guild.name, dia, contexto.author)
+    await contexto.send(embed=embed)
 
 
 @slash.slash(name="keditar_informacao_adicional", 
@@ -182,7 +185,7 @@ async def _hoje(contexto):
 async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.editar_informacao_adicional(nome_do_servidor, nome, informacao_adicional)
+    resultado = lembrete.editar_informacao_adicional(nome_do_servidor, nome, informacao_adicional, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -236,7 +239,7 @@ async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
 async def _editar_dia(contexto, nome, dia):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.editar_dia(nome_do_servidor, nome, dia)
+    resultado = lembrete.editar_dia(nome_do_servidor, nome, dia, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -246,6 +249,7 @@ async def _editar_dia(contexto, nome, dia):
              )
 async def _mensagens_diarias(contexto):
     mensagem = Embed(title="Para receber mensagens diárias dos lembretes no servidor, faça:")
+    mensagem = adiciona_info(mensagem)
     mensagem.add_field(name="Crie um canal para o Kaburagi", value="O nome do canal deve ser: kaburagi", inline=False)
     mensagem.add_field(name="Crie um cargo para o Kaburagi marcar", value="O nome do cargo deve ser: Esquecido",
                        inline=False)
