@@ -268,7 +268,7 @@ async def called_once_a_day():
             dia_da_semana = retorna_dia_da_semana()
             resultado = lembrete.mostra_lembretes(servidor.name, dia=dia_da_semana)
             if verifica_banco(servidor.name) and cargo and message_channel:
-                if resultado.title != 'Não há lembretes para %s' % dia_da_semana:
+                if resultado.title != 'Não há lembretes para **%s**' % dia_da_semana:
                     print(f"Enviando para: {message_channel}")
                     print(cargo)
                     await message_channel.send(cargo.mention, embed=resultado)
