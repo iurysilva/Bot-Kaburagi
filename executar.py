@@ -20,7 +20,6 @@ async def on_ready():
 
 
 @slash.slash(name="klembretes", 
-             guild_ids=[460678660559470592], 
              description="Lista os lembretes do servidor.",
              options=[
                create_option(
@@ -68,7 +67,6 @@ async def _lembretes(contexto, dia=None):
 
 
 @slash.slash(name="kadicionar_lembrete",
-             guild_ids=[460678660559470592],
              description="Adiciona um lembrete.",
              options=[
                  create_option(
@@ -128,7 +126,6 @@ async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None):
 
 
 @slash.slash(name="kremover_lembrete", 
-             guild_ids=[460678660559470592],
              description="Remove um lembrete do servidor.",
              options=[
                  create_option(
@@ -145,8 +142,7 @@ async def _remover_lembrete(contexto, nome):
     await contexto.send(embed=resultado)
 
 
-@slash.slash(name="kajuda", 
-             guild_ids=[460678660559470592],
+@slash.slash(name="kajuda",
              description="Exibe todos os comandos e suas descrições."
              )
 async def _ajuda(contexto):
@@ -156,7 +152,6 @@ async def _ajuda(contexto):
 
 
 @slash.slash(name="khoje", 
-             guild_ids=[460678660559470592],
              description="Exibe os lembretes correspondentes ao dia atual."
              )
 async def _hoje(contexto):
@@ -166,7 +161,6 @@ async def _hoje(contexto):
 
 
 @slash.slash(name="keditar_informacao_adicional", 
-             guild_ids=[460678660559470592],
              description="Edita as informações adicionais de um lembrete.",
              options=[
                  create_option(
@@ -190,7 +184,6 @@ async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
 
 
 @slash.slash(name="keditar_dia", 
-             guild_ids=[460678660559470592],
              description="Edita o dia de um lembrete.",
              options=[
                  create_option(
@@ -244,7 +237,6 @@ async def _editar_dia(contexto, nome, dia):
 
 
 @slash.slash(name="kmensagens_diarias", 
-             guild_ids=[460678660559470592],
              description="Instruções para receber as mensagens diárias do Kaburagi."
              )
 async def _mensagens_diarias(contexto):
