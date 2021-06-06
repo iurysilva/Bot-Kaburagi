@@ -36,11 +36,11 @@ class Lembrete(Bancos_De_Dados):
             if atributo_especifico:
                 embed.description = 'Há {} lembrete(s)'.format(numero_lembretes)
             else:
-                embed = embed.add_field(name=atributo, value='Há {} lembrete(s)'.format(numero_lembretes), inline=False)
+                embed = embed.add_field(name="**{}**".format(atributo), value='Há {} lembrete(s)'.format(numero_lembretes), inline=False)
 
         for lembrete in lembretes_dia:
             descricao = "*Informação: %s*" % (lembrete[2])
-            embed.add_field(name=lembrete[0], value=descricao, inline=True)
+            embed.add_field(name="> {}".format(lembrete[0]), value="> {}".format(descricao), inline=True)
         return embed
 
     def mostra_dados(self, nome_do_banco, dia=None, autor=None):
