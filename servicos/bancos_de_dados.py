@@ -25,6 +25,7 @@ class Bancos_De_Dados:
             print('Banco %s não existe' % nome_do_servidor)
             return False
 
+    @abstractmethod
     def listar_dados_por_atributo(self, atributo, cursor, embed, dia_especifico):
         pass
 
@@ -36,11 +37,14 @@ class Bancos_De_Dados:
     def mostra_dados(self, atributo, autor):
         pass
 
+    @abstractmethod
     def insere_dados(self, nome_do_banco, *args):
         pass
 
+    @abstractmethod
     def remove_dados(self, nome_do_banco, *args):
         pass
 
+    @abstractmethod
     def editar_atributo(self, nome_do_banco, atributo, *args):
         pass
