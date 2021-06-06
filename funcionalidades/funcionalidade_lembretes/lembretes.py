@@ -140,7 +140,7 @@ class Lembrete(Bancos_De_Dados):
                 return embed
             banco = super().acessar_banco(nome_do_servidor)
             cursor = banco.cursor()
-            cursor.execute("UPDATE Lembretes SET %s = (?) WHERE Nome = (?)", (atributo, mensagem, nome))
+            cursor.execute("UPDATE Lembretes SET %s = ? WHERE Nome = ?" % (atributo), (mensagem, nome))
             banco.commit()
             embed = Embed(title="Lembrete Atualizado")
             embed = adiciona_info(embed, autor)
