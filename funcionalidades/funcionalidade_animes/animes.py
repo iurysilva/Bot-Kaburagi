@@ -35,7 +35,7 @@ class Animes():
         mensagem.add_field(name="Nota", value=str(anime.score))
         mensagem.add_field(name="Episódios", value=str(anime.episodes))
         mensagem.add_field(name="Tipo", value=str(anime.type))
-        mensagem.add_field(name="Sinopse", value=str(anime.synopsis))
+        mensagem.add_field(name="Sinopse", value=str(traduzir_do_ingles(anime.synopsis)))
         mensagem = adiciona_info(mensagem, autor=autor)
         return mensagem
 
@@ -48,7 +48,7 @@ class Animes():
         mensagem.add_field(name="Estúdio", value=str(anime.studios[0]))
         mensagem.add_field(name="Status", value=str(traduzir_do_ingles(anime.status)))
         mensagem.add_field(name="Lançamento", value=str(traduzir_do_ingles(anime.aired)))
-        mensagem.add_field(name="Gêneros", value=str(', '.join(anime.genres)))
+        mensagem.add_field(name="Gêneros", value=str(traduzir_do_ingles(', '.join(anime.genres))))
         mensagem.add_field(name="Sinopse", value=str(traduzir_do_ingles(anime.synopsis))[0:1020] + "...")
         mensagem = adiciona_info(mensagem, autor=autor)
         return mensagem
