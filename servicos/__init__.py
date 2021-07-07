@@ -1,1 +1,2 @@
 from servicos.bancos_de_dados import Bancos_De_Dados
+from servicos.ferramentas_de_traducao import traduzir_do_ingles
