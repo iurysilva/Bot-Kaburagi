@@ -1,1 +1,2 @@
 from funcionalidades.funcionalidade_lembretes.lembretes import Lembrete
+from funcionalidades.funcionalidade_animes.animes import Animes

@@ -1,3 +1,1 @@
-from funcionalidades.funcionalidade_lembretes.informacoes_sobre_tempo import retorna_dia_da_semana
-from funcionalidades.funcionalidade_lembretes.informacoes_sobre_tempo import retorna_data_hora
-from funcionalidades.funcionalidade_lembretes.manipulacao_de_embed import adiciona_info
+

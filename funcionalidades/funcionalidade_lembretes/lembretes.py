@@ -1,4 +1,4 @@
-from funcionalidades.funcionalidade_lembretes.manipulacao_de_embed import adiciona_info
+from servicos.manipulacao_de_embed import adiciona_info
 from discord.embeds import Embed
 from servicos import Bancos_De_Dados
 
@@ -9,14 +9,14 @@ class Lembrete():
         self.tabela = "Lembretes"
         self.banco_de_dados = Bancos_De_Dados(self.caminho)
         self.dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
-        self.comandos = [["/klembretes", "Lista todos os lembretes do servidor."],
-                    ["/kadicionar_lembrete (nome) (dia) (informação adicional)",
+        self.comandos = [["/klembretes (Dia: opcional)", "Lista todos os lembretes do servidor."],
+                    ["/kadicionar_lembrete (nome) (dia) (informação adicional: opcional)",
                      "Adiciona um lembrete"],
                     ["/kremover_lembrete (nome)", "Remove um lembrete do servidor."],
                          ["/khoje", "Exibe os lembretes correspondentes ao dia atual."],
-                         ["/keditar_informacao_adicional (nome)",
+                         ["/keditar_informacao_adicional (nome) (informação adicional)",
                           "Edita as informações adicionais de um lembrete."],
-                         ["/keditar_dia (nome)", "Edita o dia de um lembrete."],
+                         ["/keditar_dia (nome) (dia)", "Edita o dia de um lembrete."],
                          ["/kmensagens_diarias",
                           "Informa os requisitos para implementar mensagens diarias no servidor."]]
         
@@ -26,7 +26,7 @@ class Lembrete():
         for comando in comandos:
             embed.add_field(name=comando[0], value=comando[1], inline=False)
         
-        return adiciona_info(embed)
+        return embed
 
     def listar_lembretes_por_atributo(self, atributo, cursor, embed, atributo_especifico):
         cursor.execute("SELECT * FROM Lembretes WHERE Dia=?", (atributo,))
