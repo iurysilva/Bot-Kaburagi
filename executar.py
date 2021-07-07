@@ -62,7 +62,7 @@ async def on_ready():
              )
 async def _lembretes(contexto, dia=None):
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.mostra_dados(nome_do_servidor, dia, contexto.author)
+    resultado = lembrete.mostra_lembretes(nome_do_servidor, dia, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -121,7 +121,7 @@ async def _lembretes(contexto, dia=None):
 async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.insere_dados(nome_do_servidor, nome, dia, informacao_adicional, contexto.author)
+    resultado = lembrete.adiciona_lembretes(nome_do_servidor, contexto.author, nome, dia, informacao_adicional)
     await contexto.send(embed=resultado)
 
 
@@ -138,7 +138,7 @@ async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None):
 async def _remover_lembrete(contexto, nome):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.remove_dados(nome_do_servidor, nome, contexto.author)
+    resultado = lembrete.remove_lembretes(nome_do_servidor, contexto.author, nome)
     await contexto.send(embed=resultado)
 
 
@@ -156,7 +156,7 @@ async def _ajuda(contexto):
              )
 async def _hoje(contexto):
     dia = retorna_dia_da_semana()
-    embed = lembrete.mostra_dados(contexto.guild.name, dia, contexto.author)
+    embed = lembrete.mostra_lembretes(contexto.guild.name, dia, contexto.author)
     print("Enviando...")
     await contexto.send(embed=embed)
 
@@ -180,7 +180,7 @@ async def _hoje(contexto):
 async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.editar_atributo(nome_do_servidor, "Adicional", nome, informacao_adicional, contexto.author)
+    resultado = lembrete.editar_lembrete(nome_do_servidor, contexto.author, "Adicional", nome, informacao_adicional)
     await contexto.send(embed=resultado)
 
 
@@ -233,7 +233,7 @@ async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
 async def _editar_dia(contexto, nome, dia):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.editar_atributo(nome_do_servidor, "Dia", nome, dia, contexto.author)
+    resultado = lembrete.editar_lembrete(nome_do_servidor, contexto.author, "Dia", nome, dia)
     await contexto.send(embed=resultado)
 
 
@@ -251,7 +251,7 @@ async def _mensagens_diarias(contexto):
 
 @tasks.loop(minutes=1)
 async def called_once_a_day():
-    horarios_para_avisar = ['09:00', '19:30']
+    horarios_para_avisar = ['08:02', '19:30']
     for servidor in cliente.guilds:
         if retorna_hora() in horarios_para_avisar:
             message_channel = None
@@ -263,8 +263,8 @@ async def called_once_a_day():
                 if canal.name == "kaburagi":
                     message_channel = canal
             dia_da_semana = retorna_dia_da_semana()
-            resultado = lembrete.mostra_dados(servidor.name, dia=dia_da_semana)
-            if lembrete.verifica_banco(servidor.name) and cargo and message_channel:
+            resultado = lembrete.mostra_lembretes(servidor.name, dia=dia_da_semana)
+            if lembrete.banco_de_dados.verifica_banco(servidor.name) and cargo and message_channel:
                 if resultado.title != 'Não há lembretes para **%s**' % dia_da_semana:
                     print(f"Enviando para: {message_channel}")
                     print(cargo)
