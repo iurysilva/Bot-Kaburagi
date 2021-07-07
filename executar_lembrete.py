@@ -2,11 +2,6 @@ from servicos.initiate_bot import *
 lembrete = Lembrete()
 
 
-@cliente.event
-async def on_ready():
-    print('Kaburagi Iniciado!')
-
-
 @slash.slash(name="kajuda_lembretes",
              description="Exibe todos os comandos da funcionalidade lembretes"
              )

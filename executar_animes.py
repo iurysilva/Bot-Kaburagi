@@ -24,6 +24,7 @@ async def _ajuda_animes(contexto):
              ]
              )
 async def _procura(contexto, anime):
+    await contexto.send("Pesquisando...")
     resultado = animes.procura(anime, autor=contexto.author)
     await contexto.send(embed=resultado)
 

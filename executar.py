@@ -2,6 +2,11 @@ from executar_lembrete import *
 from executar_animes import *
 
 
+@cliente.event
+async def on_ready():
+    print('Kaburagi Iniciado!')
+
+
 @slash.slash(name="kajuda",
              description="Exibe os comandos de ajuda."
              )
