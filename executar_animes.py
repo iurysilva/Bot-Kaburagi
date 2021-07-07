@@ -27,3 +27,20 @@ async def _procura(contexto, anime):
     await contexto.send("Pesquisando...", delete_after=1)
     resultado = animes.procura(anime, autor=contexto.author)
     await contexto.channel.send(embed=resultado)
+
+
+@slash.slash(name="kprocura_detalhada",
+             description="Exibe informações detalhadas sobre um anime específico",
+             options=[
+                 create_option(
+                     name="nome",
+                     description="Nome do anime.",
+                     option_type=3,
+                     required=True
+                 )
+             ]
+             )
+async def _procura_detalhada(contexto, nome):
+    await contexto.send("Pesquisando...", delete_after=1)
+    resultado = animes.procura_detalhada(nome, autor=contexto.author)
+    await contexto.channel.send(embed=resultado)
