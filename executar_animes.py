@@ -107,7 +107,7 @@ async def _anime_pool_remover(contexto, nome):
     anime = embed.title
     nome_do_servidor = contexto.guild.name
     resultado = animes.remover_anime_da_pool(nome_do_servidor, anime)
-    resultado = adiciona_info(resultado)
+    resultado = adiciona_info(resultado, autor=contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -125,7 +125,7 @@ async def _anime_pool_remover(contexto, nome):
 async def _anime_pool(contexto, ignore=None):
     nome_do_servidor = contexto.guild.name
     resultado = animes.visualizar_pool(nome_do_servidor)
-    resultado = adiciona_info(resultado)
+    resultado = adiciona_info(resultado, autor=contexto.author)
     mensagem = await contexto.send(embed=resultado)
     linhas = animes.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, animes.tabela)
     for reagindo in range(linhas):
@@ -146,7 +146,7 @@ async def _anime_pool(contexto, ignore=None):
 async def _anime_pool_limpar(contexto, ignore=None):
     nome_do_servidor = contexto.guild.name
     resultado = animes.limpa_pool(nome_do_servidor)
-    resultado = adiciona_info(resultado)
+    resultado = adiciona_info(resultado, autor=contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -154,5 +154,5 @@ async def _anime_pool_limpar(contexto, ignore=None):
 async def anime_pool_limpar(contexto, ignore=None):
     nome_do_servidor = contexto.guild.name
     resultado = animes.limpa_pool(nome_do_servidor)
-    resultado = adiciona_info(resultado)
+    resultado = adiciona_info(resultado, autor=contexto.author)
     await contexto.send(embed=resultado)
