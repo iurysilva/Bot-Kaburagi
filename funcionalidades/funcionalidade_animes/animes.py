@@ -1,6 +1,6 @@
 from mal import *
 from discord import Embed
-from servicos.manipulacao_de_embed import adiciona_info
+import os
 from servicos import traduzir_do_ingles
 from servicos import Bancos_De_Dados
 
@@ -14,6 +14,7 @@ class Animes():
                          ["/kprocura_detalhada (nome)", "Exibe informações mais detalhadas, porém demora mais"],
                          ["/kanime_pool_adicionar (nome)", "Adiciona um anime na pool"],
                          ["/kanime_pool_remover (nome)", "remove um anime da pool"],
+                         ["/kanime_pool_limpar", "Remove todos os animes da pool"],
                          ["/kanime_pool", "Visualiza todos os animes na pool"]]
         self.emojis = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
 
@@ -84,6 +85,16 @@ class Animes():
         embed = Embed(title="Anime %s removido da pool" % nome)
         print('Anime removido com sucesso\n')
         return embed
+
+    def limpa_pool(self, nome_do_servidor):
+        print("\nFunção limpar pool")
+        if '%s' % nome_do_servidor in os.listdir(self.caminho):
+            print('Removendo pool %s\n' % nome_do_servidor)
+            os.remove("%s/%s" % (self.caminho, nome_do_servidor))
+            return Embed(title="A pool foi limpa")
+        else:
+            print("Pool não encontrada\n")
+            return Embed(title="A pool já estava limpa")
 
     def visualizar_pool(self, nome_do_servidor):
         print("\nFunção visualizar pool")

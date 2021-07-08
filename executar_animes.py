@@ -130,3 +130,29 @@ async def _anime_pool(contexto, ignore=None):
     linhas = animes.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, animes.tabela)
     for reagindo in range(linhas):
         await mensagem.add_reaction(animes.emojis[reagindo])
+
+
+@slash.slash(name="kanime_pool_limpar",
+             description="Limpa todos os animes da pool",
+             options=[
+                 create_option(
+                     name="ignore",
+                     description="ignore",
+                     option_type=3,
+                     required=False
+                 )
+             ]
+             )
+async def _anime_pool_limpar(contexto, ignore=None):
+    nome_do_servidor = contexto.guild.name
+    resultado = animes.limpa_pool(nome_do_servidor)
+    resultado = adiciona_info(resultado)
+    await contexto.send(embed=resultado)
+
+
+@cliente.command()
+async def anime_pool_limpar(contexto, ignore=None):
+    nome_do_servidor = contexto.guild.name
+    resultado = animes.limpa_pool(nome_do_servidor)
+    resultado = adiciona_info(resultado)
+    await contexto.send(embed=resultado)
