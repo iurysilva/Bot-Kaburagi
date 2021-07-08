@@ -104,6 +104,6 @@ class Animes():
             resultado = Embed(title="Pool de Animes")
             for anime in range(numero_de_linhas):
                 linha = self.banco_de_dados.retornar_linha(nome_do_servidor, self.tabela, anime)
-                resultado.add_field(name="[%s] " % self.emojis[anime] +linha[0], value="Inserido por %s" % linha[1], inline=False)
+                resultado.add_field(name="%s " % self.emojis[anime] +linha[0], value="Inserido por %s" % linha[1], inline=False)
             return resultado
         return Embed(title="Pool está atualmente vazia")
