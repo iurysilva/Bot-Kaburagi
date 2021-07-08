@@ -1,4 +1,5 @@
 from servicos.initiate_bot import *
+
 lembrete = Lembrete()
 
 
@@ -22,47 +23,48 @@ async def _ajuda_lembretes(contexto, ignore=None):
 @slash.slash(name="klembretes",
              description="Lista os lembretes do servidor.",
              options=[
-               create_option(
-                 name="dia",
-                 description="Lembretes de um dia específico.",
-                 option_type=3,
-                 required=False,
-                 choices=[
-                  create_choice(
-                    name="Segunda-Feira",
-                    value="Segunda"
-                  ),
-                  create_choice(
-                    name="Terça-Feira",
-                    value="Terça"
-                  ),
-                  create_choice(
-                    name="Quarta-Feira",
-                    value="Quarta"
-                  ),
-                  create_choice(
-                    name="Quinta-Feira",
-                    value="Quinta"
-                  ),
-                  create_choice(
-                    name="Sexta-Feira",
-                    value="Sexta"
-                  ),
-                  create_choice(
-                    name="Sábado",
-                    value="Sábado"
-                  ),
-                  create_choice(
-                    name="Domingo",
-                    value="Domingo"
-                  ),
-                ]
-               ),
+                 create_option(
+                     name="dia",
+                     description="Lembretes de um dia específico.",
+                     option_type=3,
+                     required=False,
+                     choices=[
+                         create_choice(
+                             name="Segunda-Feira",
+                             value="Segunda"
+                         ),
+                         create_choice(
+                             name="Terça-Feira",
+                             value="Terça"
+                         ),
+                         create_choice(
+                             name="Quarta-Feira",
+                             value="Quarta"
+                         ),
+                         create_choice(
+                             name="Quinta-Feira",
+                             value="Quinta"
+                         ),
+                         create_choice(
+                             name="Sexta-Feira",
+                             value="Sexta"
+                         ),
+                         create_choice(
+                             name="Sábado",
+                             value="Sábado"
+                         ),
+                         create_choice(
+                             name="Domingo",
+                             value="Domingo"
+                         ),
+                     ]
+                 ),
              ]
              )
 async def _lembretes(contexto, dia=None):
     nome_do_servidor = contexto.guild.name
     resultado = lembrete.mostra_lembretes(nome_do_servidor, dia, contexto.author)
+    resultado = adiciona_info(resultado, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -70,58 +72,59 @@ async def _lembretes(contexto, dia=None):
              description="Adiciona um lembrete.",
              options=[
                  create_option(
-                 name="nome",
-                 description="Nome do lembrete.",
-                 option_type=3,
-                 required=True
-               ),
+                     name="nome",
+                     description="Nome do lembrete.",
+                     option_type=3,
+                     required=True
+                 ),
                  create_option(
-                 name="dia",
-                 description="Dia no qual você quer ser lembrado.",
-                 option_type=3,
-                 required=True,
-                 choices=[
-                  create_choice(
-                    name="Segunda-Feira",
-                    value="Segunda"
-                  ),
-                  create_choice(
-                    name="Terça-Feira",
-                    value="Terça"
-                  ),
-                  create_choice(
-                    name="Quarta-Feira",
-                    value="Quarta"
-                  ),
-                  create_choice(
-                    name="Quinta-Feira",
-                    value="Quinta"
-                  ),
-                  create_choice(
-                    name="Sexta-Feira",
-                    value="Sexta"
-                  ),
-                  create_choice(
-                    name="Sábado",
-                    value="Sábado"
-                  ),
-                  create_choice(
-                    name="Domingo",
-                    value="Domingo"
-                  ),
-                ]
-               ),
+                     name="dia",
+                     description="Dia no qual você quer ser lembrado.",
+                     option_type=3,
+                     required=True,
+                     choices=[
+                         create_choice(
+                             name="Segunda-Feira",
+                             value="Segunda"
+                         ),
+                         create_choice(
+                             name="Terça-Feira",
+                             value="Terça"
+                         ),
+                         create_choice(
+                             name="Quarta-Feira",
+                             value="Quarta"
+                         ),
+                         create_choice(
+                             name="Quinta-Feira",
+                             value="Quinta"
+                         ),
+                         create_choice(
+                             name="Sexta-Feira",
+                             value="Sexta"
+                         ),
+                         create_choice(
+                             name="Sábado",
+                             value="Sábado"
+                         ),
+                         create_choice(
+                             name="Domingo",
+                             value="Domingo"
+                         ),
+                     ]
+                 ),
                  create_option(
-                 name="informacao_adicional",
-                 description="Alguma informação adicional para o lembrete.",
-                 option_type=3,
-                 required=False
-               ),
+                     name="informacao_adicional",
+                     description="Alguma informação adicional para o lembrete.",
+                     option_type=3,
+                     required=False
+                 ),
              ])
 async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.adiciona_lembretes(nome_do_servidor, contexto.author, nome, dia, informacao_adicional)
+    resultado = lembrete.adiciona_lembretes(nome_do_servidor, nome, dia, informacao_adicional)
+    resultado = adiciona_info(resultado, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -129,16 +132,17 @@ async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None):
              description="Remove um lembrete do servidor.",
              options=[
                  create_option(
-                 name="nome",
-                 description="Nome do lembrete a ser removido.",
-                 option_type=3,
-                 required=True
-               )
+                     name="nome",
+                     description="Nome do lembrete a ser removido.",
+                     option_type=3,
+                     required=True
+                 )
              ])
 async def _remover_lembrete(contexto, nome):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.remove_lembretes(nome_do_servidor, contexto.author, nome)
+    resultado = lembrete.remove_lembretes(nome_do_servidor, nome)
+    resultado = adiciona_info(resultado, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -164,22 +168,23 @@ async def _hoje(contexto, ignore=None):
              description="Edita as informações adicionais de um lembrete.",
              options=[
                  create_option(
-                 name="nome",
-                 description="Nome do lembrete a ser editado.",
-                 option_type=3,
-                 required=True
-               ),
+                     name="nome",
+                     description="Nome do lembrete a ser editado.",
+                     option_type=3,
+                     required=True
+                 ),
                  create_option(
-                 name="informacao_adicional",
-                 description="Nova informação adicional para o lembrete.",
-                 option_type=3,
-                 required=True
-               ),
+                     name="informacao_adicional",
+                     description="Nova informação adicional para o lembrete.",
+                     option_type=3,
+                     required=True
+                 ),
              ])
 async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.editar_lembrete(nome_do_servidor, contexto.author, "Adicional", nome, informacao_adicional)
+    resultado = lembrete.editar_lembrete(nome_do_servidor, "Adicional", nome, informacao_adicional)
+    resultado = adiciona_info(resultado, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -187,52 +192,53 @@ async def _editar_informacao_adicional(contexto, nome, informacao_adicional):
              description="Edita o dia de um lembrete.",
              options=[
                  create_option(
-                 name="nome",
-                 description="Nome do lembrete a ser editado.",
-                 option_type=3,
-                 required=True,
-               ),
+                     name="nome",
+                     description="Nome do lembrete a ser editado.",
+                     option_type=3,
+                     required=True,
+                 ),
                  create_option(
-                 name="dia",
-                 description="Novo dia do lembrete.",
-                 option_type=3,
-                 required=True,
-                 choices=[
-                  create_choice(
-                    name="Segunda-Feira",
-                    value="Segunda"
-                  ),
-                  create_choice(
-                    name="Terça-Feira",
-                    value="Terça"
-                  ),
-                  create_choice(
-                    name="Quarta-Feira",
-                    value="Quarta"
-                  ),
-                  create_choice(
-                    name="Quinta-Feira",
-                    value="Quinta"
-                  ),
-                  create_choice(
-                    name="Sexta-Feira",
-                    value="Sexta"
-                  ),
-                  create_choice(
-                    name="Sábado",
-                    value="Sábado"
-                  ),
-                  create_choice(
-                    name="Domingo",
-                    value="Domingo"
-                  ),
-                ]
-               ),
+                     name="dia",
+                     description="Novo dia do lembrete.",
+                     option_type=3,
+                     required=True,
+                     choices=[
+                         create_choice(
+                             name="Segunda-Feira",
+                             value="Segunda"
+                         ),
+                         create_choice(
+                             name="Terça-Feira",
+                             value="Terça"
+                         ),
+                         create_choice(
+                             name="Quarta-Feira",
+                             value="Quarta"
+                         ),
+                         create_choice(
+                             name="Quinta-Feira",
+                             value="Quinta"
+                         ),
+                         create_choice(
+                             name="Sexta-Feira",
+                             value="Sexta"
+                         ),
+                         create_choice(
+                             name="Sábado",
+                             value="Sábado"
+                         ),
+                         create_choice(
+                             name="Domingo",
+                             value="Domingo"
+                         ),
+                     ]
+                 ),
              ])
 async def _editar_dia(contexto, nome, dia):
     nome = string.capwords(nome)
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.editar_lembrete(nome_do_servidor, contexto.author, "Dia", nome, dia)
+    resultado = lembrete.editar_lembrete(nome_do_servidor, "Dia", nome, dia)
+    resultado = adiciona_info(resultado, contexto.author)
     await contexto.send(embed=resultado)
 
 
@@ -285,5 +291,6 @@ async def called_once_a_day():
 async def before():
     await cliente.wait_until_ready()
     print("Terminou de Esperar")
+
 
 called_once_a_day.start()
