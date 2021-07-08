@@ -6,5 +6,4 @@ def adiciona_info(embed, autor=None):
     embed.timestamp = retorna_data_hora()
     if autor:
         embed.set_author(name=autor.display_name, icon_url=autor.avatar_url)
-    
     return embed

@@ -77,3 +77,17 @@ class Bancos_De_Dados:
                 dataframe.to_sql(tabela, banco, if_exists="replace", index=False)
                 return True
         return False
+
+    def retornar_numero_de_linhas(self, nome_do_banco, tabela):
+        if self.verifica_banco(nome_do_banco):
+            banco = self.acessar_banco(nome_do_banco)
+            dataframe = pd.read_sql_query("select * from %s" % tabela, banco)
+            return len(dataframe)
+        return 0
+
+    def retornar_linha(self, nome_do_banco, tabela, linha):
+        if self.verifica_banco(nome_do_banco):
+            banco = self.acessar_banco(nome_do_banco)
+            dataframe = pd.read_sql_query("select * from %s" % tabela, banco)
+            return dataframe.loc[linha]
+        return False

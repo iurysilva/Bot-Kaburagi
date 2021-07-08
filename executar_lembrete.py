@@ -3,9 +3,17 @@ lembrete = Lembrete()
 
 
 @slash.slash(name="kajuda_lembretes",
-             description="Exibe todos os comandos da funcionalidade lembretes"
+             description="Exibe todos os comandos da funcionalidade lembretes",
+             options=[
+                 create_option(
+                     name="ignore",
+                     description="ignore",
+                     option_type=3,
+                     required=False
+                 )
+             ]
              )
-async def _ajuda_lembretes(contexto):
+async def _ajuda_lembretes(contexto, ignore=None):
     embed = lembrete.ajuda()
     embed = adiciona_info(embed, contexto.author)
     await contexto.send(embed=embed)
@@ -135,9 +143,17 @@ async def _remover_lembrete(contexto, nome):
 
 
 @slash.slash(name="khoje",
-             description="Exibe os lembretes correspondentes ao dia atual."
+             description="Exibe os lembretes correspondentes ao dia atual.",
+             options=[
+                 create_option(
+                     name="ignore",
+                     description="ignore",
+                     option_type=3,
+                     required=False
+                 )
+             ]
              )
-async def _hoje(contexto):
+async def _hoje(contexto, ignore=None):
     dia = retorna_dia_da_semana()
     embed = lembrete.mostra_lembretes(contexto.guild.name, dia, contexto.author)
     print("Enviando...")

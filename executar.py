@@ -8,9 +8,17 @@ async def on_ready():
 
 
 @slash.slash(name="kajuda",
-             description="Exibe os comandos de ajuda."
+             description="Exibe os comandos de ajuda.",
+             options=[
+                 create_option(
+                     name="ignore",
+                     description="ignore",
+                     option_type=3,
+                     required=False
+                 )
+             ]
              )
-async def _ajuda(contexto):
+async def _ajuda(contexto, ignore=None):
     mensagem = Embed(title="O Kaburagi agora possui mais funcionalidades, para obter ajuda sobre cada uma use:")
     mensagem = adiciona_info(mensagem, autor=contexto.author)
     mensagem.add_field(name="/kajuda_lembretes", value="Crie e edite lembretes", inline=False)
