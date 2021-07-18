@@ -1,12 +1,12 @@
 from executaveis.initiate_bot import *
+from funcionalidades import Filmes
 import asyncio
-from servicos.manipulacao_de_embed import adiciona_info
 
-animes = Animes()
+filmes = Filmes()
 
 
-@slash.slash(name="kajuda_animes",
-             description="Exibe todos os comandos da funcionalidade animes",
+@slash.slash(name="kajuda_filmes",
+             description="Exibe todos os comandos da funcionalidade filmes",
              options=[
                  create_option(
                      name="ignore",
@@ -16,64 +16,46 @@ animes = Animes()
                  )
              ]
              )
-async def _ajuda_animes(contexto, ignore=None):
-    embed = animes.ajuda()
+async def _ajuda_filmes(contexto, ignore=None):
+    embed = filmes.ajuda()
     embed = adiciona_info(embed, contexto.author)
     await contexto.send(embed=embed)
 
 
-@slash.slash(name="kanime_procura",
-             description="Exibe informações sobre um anime específico",
+@slash.slash(name="kfilme_procura",
+             description="Exibe informações sobre um filme específico",
              options=[
                  create_option(
-                     name="anime",
-                     description="Nome do anime.",
+                     name="filme",
+                     description="Nome do filme.",
                      option_type=3,
                      required=True
                  )
              ]
              )
-async def _anime_procura(contexto, anime):
+async def _filme_procura(contexto, filme):
     await contexto.send("Pesquisando...", delete_after=1)
-    resultado = animes.procura(anime, autor=contexto.author)
+    resultado = filmes.procura(filme)
     resultado = adiciona_info(resultado, autor=contexto.author)
     await contexto.channel.send(embed=resultado)
 
 
-@slash.slash(name="kanime_procura_detalhada",
-             description="Exibe informações detalhadas sobre um anime específico",
+@slash.slash(name="kfilme_pool_adicionar",
+             description="Insere um filme na pool",
              options=[
                  create_option(
                      name="nome",
-                     description="Nome do anime.",
+                     description="Nome do filme.",
                      option_type=3,
                      required=True
                  )
              ]
              )
-async def _anime_procura_detalhada(contexto, nome):
+async def _filme_pool_adicionar(contexto, nome):
     await contexto.send("Pesquisando...", delete_after=1)
-    resultado = animes.procura_detalhada(nome, autor=contexto.author)
-    resultado = adiciona_info(resultado, autor=contexto.author)
-    await contexto.channel.send(embed=resultado)
-
-
-@slash.slash(name="kanime_pool_adicionar",
-             description="Insere um anime na pool",
-             options=[
-                 create_option(
-                     name="nome",
-                     description="Nome do anime.",
-                     option_type=3,
-                     required=True
-                 )
-             ]
-             )
-async def _anime_pool_adicionar(contexto, nome):
-    await contexto.send("Pesquisando...", delete_after=1)
-    embed = animes.procura(nome, contexto.author)
-    anime = embed.title
-    embed.title = "Você deseja adicionar o anime %s para a pool?" % anime
+    embed = filmes.procura(nome)
+    filme = embed.title
+    embed.title = "Você deseja adicionar o filme %s para a pool?" % filme
     mensagem = await contexto.channel.send(embed=embed)
     await mensagem.add_reaction("✅")
     await mensagem.add_reaction("❌")
@@ -81,7 +63,7 @@ async def _anime_pool_adicionar(contexto, nome):
         try:
             reacao, usuario = await cliente.wait_for('reaction_add', timeout=30.0)
             if usuario.name == contexto.author.name:
-                resultado = animes.adicionar_anime_na_pool(reacao, usuario, anime, contexto.guild.name)
+                resultado = filmes.adicionar_filme_na_pool(reacao, usuario, filme, contexto.guild.name)
                 resultado = adiciona_info(resultado, autor=contexto.author)
                 await contexto.channel.send(embed=resultado)
                 return 1
@@ -90,29 +72,29 @@ async def _anime_pool_adicionar(contexto, nome):
             return 0
 
 
-@slash.slash(name="kanime_pool_remover",
-             description="Remove um anime da pool",
+@slash.slash(name="kfilme_pool_remover",
+             description="Remove um filme da pool",
              options=[
                  create_option(
                      name="nome",
-                     description="Nome do anime.",
+                     description="Nome do filme.",
                      option_type=3,
                      required=True
                  )
              ]
              )
-async def _anime_pool_remover(contexto, nome):
+async def _filme_pool_remover(contexto, nome):
     await contexto.send("Pesquisando...", delete_after=1)
-    embed = animes.procura(nome, contexto.author)
-    anime = embed.title
+    embed = filmes.procura(nome)
+    filme = embed.title
     nome_do_servidor = contexto.guild.name
-    resultado = animes.remover_anime_da_pool(nome_do_servidor, anime)
+    resultado = filmes.remover_filme_da_pool(nome_do_servidor, filme)
     resultado = adiciona_info(resultado, autor=contexto.author)
     await contexto.send(embed=resultado)
 
 
-@slash.slash(name="kanime_pool",
-             description="Visualiza todos os animes da pool",
+@slash.slash(name="kfilme_pool",
+             description="Visualiza todos os filmes da pool",
              options=[
                  create_option(
                      name="ignore",
@@ -122,18 +104,18 @@ async def _anime_pool_remover(contexto, nome):
                  )
              ]
              )
-async def _anime_pool(contexto, ignore=None):
+async def _filme_pool(contexto, ignore=None):
     nome_do_servidor = contexto.guild.name
-    resultado = animes.visualizar_pool(nome_do_servidor)
+    resultado = filmes.visualizar_pool(nome_do_servidor)
     resultado = adiciona_info(resultado, autor=contexto.author)
     mensagem = await contexto.send(embed=resultado)
-    linhas = animes.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, animes.tabela)
+    linhas = filmes.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, filmes.tabela)
     for reagindo in range(linhas):
-        await mensagem.add_reaction(animes.emojis[reagindo])
+        await mensagem.add_reaction(filmes.emojis[reagindo])
 
 
-@slash.slash(name="kanime_pool_limpar",
-             description="Limpa todos os animes da pool",
+@slash.slash(name="kfilme_pool_limpar",
+             description="Limpa todos os filmes da pool",
              options=[
                  create_option(
                      name="ignore",
@@ -143,9 +125,8 @@ async def _anime_pool(contexto, ignore=None):
                  )
              ]
              )
-async def _anime_pool_limpar(contexto, ignore=None):
+async def _filme_pool_limpar(contexto, ignore=None):
     nome_do_servidor = contexto.guild.name
-    resultado = animes.limpa_pool(nome_do_servidor)
+    resultado = filmes.limpa_pool(nome_do_servidor)
     resultado = adiciona_info(resultado, autor=contexto.author)
     await contexto.send(embed=resultado)
-

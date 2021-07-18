@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.idea
 token.txt
+funcionalidades/funcionalidade_filmes/api_key.txt
 
 # C extensions
 *.so
@@ -132,3 +133,4 @@ dmypy.json
 
 bd_animes.csv
 token.txt
+funcionalidades/funcionalidade_filmes/api_key.txt

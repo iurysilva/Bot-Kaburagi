@@ -1,5 +1,6 @@
 from executaveis.executar_animes import *
 from executaveis.executar_lembrete import *
+from executaveis.executar_filmes import *
 
 
 @cliente.event
@@ -22,7 +23,8 @@ async def _ajuda(contexto, ignore=None):
     mensagem = Embed(title="O Kaburagi agora possui mais funcionalidades, para obter ajuda sobre cada uma use:")
     mensagem = adiciona_info(mensagem, autor=contexto.author)
     mensagem.add_field(name="/kajuda_lembretes", value="Crie e edite lembretes", inline=False)
-    mensagem.add_field(name="/kajuda_animes", value="Pesquise sobre animes", inline=False)
+    mensagem.add_field(name="/kajuda_animes", value="Pesquise e gerencie animes", inline=False)
+    mensagem.add_field(name="/kajuda_filmes", value="Pesquise e gerencie filmes", inline=False)
     await contexto.send(embed=mensagem)
 
 

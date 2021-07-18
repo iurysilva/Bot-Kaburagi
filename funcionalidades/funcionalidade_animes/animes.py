@@ -10,8 +10,8 @@ class Animes():
         self.caminho = 'funcionalidades/funcionalidade_animes/bancos'
         self.tabela = "Pool"
         self.banco_de_dados = Bancos_De_Dados(self.caminho)
-        self.comandos = [["/kprocura (nome)", "Mostra as informações do anime especificado"],
-                         ["/kprocura_detalhada (nome)", "Exibe informações mais detalhadas, porém demora mais"],
+        self.comandos = [["/kanime_procura (nome)", "Mostra as informações do anime especificado"],
+                         ["/kanime_procura_detalhada (nome)", "Exibe informações mais detalhadas, porém demora mais"],
                          ["/kanime_pool_adicionar (nome)", "Adiciona um anime na pool"],
                          ["/kanime_pool_remover (nome)", "remove um anime da pool"],
                          ["/kanime_pool_limpar", "Remove todos os animes da pool"],
