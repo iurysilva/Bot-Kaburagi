@@ -16,7 +16,8 @@ class Animes():
                          ["/kanime_pool_remover (nome)", "remove um anime da pool"],
                          ["/kanime_pool_limpar", "Remove todos os animes da pool"],
                          ["/kanime_pool", "Visualiza todos os animes na pool"]]
-        self.emojis = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
+        self.emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵',
+                       '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿']
 
     def ajuda(self):
         print("\nFunção Ajuda\n")
@@ -67,6 +68,8 @@ class Animes():
 
     def adicionar_anime_na_pool(self, reaction, user, nome, nome_do_servidor):
         print("\nFunção adicionar anime na pool, reação: ", reaction)
+        if self.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, self.tabela) >= 26:
+            return Embed(title="Número máximo de animes na pool alcançado: 26")
         if reaction.emoji == "✅":
             resultado = self.banco_de_dados.insere_dados(nome_do_servidor, self.tabela,
                                                          {"Nome": nome, "Usuário": user.name}, "Nome")
