@@ -25,4 +25,6 @@ async def _ajuda(contexto, ignore=None):
     mensagem.add_field(name="/kajuda_animes", value="Pesquise sobre animes", inline=False)
     await contexto.send(embed=mensagem)
 
-cliente.run('ODA4NzEzNTMzMzk4ODQzMzky.YCKjKw.52-rt_tB5bEAiZ5aRenQgguYPmY')
+
+token = open('token.txt').read()
+cliente.run(token)
