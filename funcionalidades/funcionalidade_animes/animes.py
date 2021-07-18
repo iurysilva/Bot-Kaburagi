@@ -102,12 +102,14 @@ class Animes():
     def visualizar_pool(self, nome_do_servidor):
         print("\nFunção visualizar pool")
         numero_de_linhas = self.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, self.tabela)
-        print("Número de linhas: ", numero_de_linhas, '\n')
+        print("Número de linhas: ", numero_de_linhas)
         if numero_de_linhas != 0:
             resultado = Embed(title="Pool de Animes")
             for anime in range(numero_de_linhas):
                 linha = self.banco_de_dados.retornar_linha(nome_do_servidor, self.tabela, anime)
                 resultado.add_field(name="%s " % self.emojis[anime] + linha[0], value="Inserido por %s" % linha[1],
                                     inline=False)
+            print("Visualiza pool finalizada")
             return resultado
+        print("Visualiza pool finalizada")
         return Embed(title="Pool está atualmente vazia")

@@ -1,4 +1,4 @@
-from servicos.initiate_bot import *
+from executaveis.initiate_bot import *
 
 lembrete = Lembrete()
 

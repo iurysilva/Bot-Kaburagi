@@ -12,16 +12,13 @@ class Bancos_De_Dados:
         return banco
 
     def verifica_banco(self, nome_do_servidor):
-        print('Verificação de banco feita em: ', nome_do_servidor)
         nome_dos_bancos = []
         for arquivo in os.listdir(self.caminho):
             if arquivo != '__pycache__':
                 nome_dos_bancos.append(arquivo)
         if nome_do_servidor in nome_dos_bancos:
-            print('Banco %s existe' % nome_do_servidor)
             return True
         else:
-            print('Banco %s não existe' % nome_do_servidor)
             return False
 
     def listar_dados_por_atributo(self, atributo, cursor, embed, dia_especifico):

@@ -1,5 +1,5 @@
-from executar_lembrete import *
-from executar_animes import *
+from executaveis.executar_animes import *
+from executaveis.executar_lembrete import *
 
 
 @cliente.event

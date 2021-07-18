@@ -1,4 +1,4 @@
-from servicos.initiate_bot import *
+from executaveis.initiate_bot import *
 import asyncio
 from servicos.manipulacao_de_embed import adiciona_info
 
@@ -149,10 +149,3 @@ async def _anime_pool_limpar(contexto, ignore=None):
     resultado = adiciona_info(resultado, autor=contexto.author)
     await contexto.send(embed=resultado)
 
-
-@cliente.command()
-async def anime_pool_limpar(contexto, ignore=None):
-    nome_do_servidor = contexto.guild.name
-    resultado = animes.limpa_pool(nome_do_servidor)
-    resultado = adiciona_info(resultado, autor=contexto.author)
-    await contexto.send(embed=resultado)
