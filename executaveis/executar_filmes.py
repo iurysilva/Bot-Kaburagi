@@ -62,7 +62,7 @@ async def _filme_pool_adicionar(contexto, nome):
     while True:
         try:
             reacao, usuario = await cliente.wait_for('reaction_add', timeout=30.0)
-            if usuario.name == contexto.author.name:
+            if usuario.name == contexto.author.name and reacao.message == mensagem:
                 resultado = filmes.adicionar_filme_na_pool(reacao, usuario, filme, contexto.guild.name)
                 resultado = adiciona_info(resultado, autor=contexto.author)
                 await contexto.channel.send(embed=resultado)
