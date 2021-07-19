@@ -28,5 +28,19 @@ async def _ajuda(contexto, ignore=None):
     await contexto.send(embed=mensagem)
 
 
+@tasks.loop(minutes=1)
+async def executa_uma_vez_ao_dia():
+    await lembrete.alarme(cliente)
+
+
+@executa_uma_vez_ao_dia.before_loop
+async def espera():
+    await cliente.wait_until_ready()
+    print("Terminou de Esperar")
+
+
+executa_uma_vez_ao_dia.start()
+
+
 token = open('token.txt').read()
 cliente.run(token)

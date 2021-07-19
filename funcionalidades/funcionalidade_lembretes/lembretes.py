@@ -1,5 +1,6 @@
 from discord.embeds import Embed
 from servicos import Bancos_De_Dados
+from servicos.informacoes_sobre_tempo import retorna_hora, retorna_dia_da_semana
 
 
 class Lembrete():
@@ -103,3 +104,34 @@ class Lembrete():
         embed.add_field(name=nome, value="%s: %s" % (atributo, dado))
         print('Lembrete editado com sucesso\n')
         return embed
+
+    async def alarme(self, cliente):
+        horarios_para_avisar = ['09:00', '19:30']
+        for servidor in cliente.guilds:
+            if retorna_hora() in horarios_para_avisar:
+                message_channel = None
+                cargo = None
+                for role in servidor.roles:
+                    if role.name == "Esquecido":
+                        cargo = role
+                for canal in servidor.channels:
+                    if canal.name == "kaburagi":
+                        message_channel = canal
+                dia_da_semana = retorna_dia_da_semana()
+                resultado = self.mostra_lembretes(servidor.name, dia=dia_da_semana)
+                if self.banco_de_dados.verifica_banco(servidor.name) and cargo and message_channel:
+                    if resultado.title != 'Não há lembretes para **%s**' % dia_da_semana:
+                        print(f"Enviando para: {message_channel}")
+                        print(cargo)
+                        await message_channel.send(cargo.mention, embed=resultado)
+                    else:
+                        print("Não há lembretes para %s" % dia_da_semana)
+                else:
+                    if not cargo:
+                        print('cargo não existe no servidor')
+                    elif not message_channel:
+                        print('canal não existe no servidor')
+                    print("Função hoje retornou False")
+
+            else:
+                print("Hora %s não é um horario para avisar" % retorna_hora())
