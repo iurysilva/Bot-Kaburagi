@@ -136,7 +136,7 @@ class Lembrete():
             if self.banco_de_dados.verifica_banco(servidor.name):
                 dia = retorna_dia_da_semana()
                 resultado = self.mostra_lembretes(servidor.name, dia=dia, hora=retorna_hora())
-                if resultado.title != 'N2ão há lembretes para **%s**' % dia:
+                if resultado.title != 'Não há lembretes para **%s**' % dia:
                     message_channel = None
                     cargos_para_marcar = []
                     cargos = self.banco_de_dados.retorna_items_de_coluna_sem_repeticao(servidor.name, self.tabela,
