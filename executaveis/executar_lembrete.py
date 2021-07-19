@@ -63,7 +63,7 @@ async def _ajuda_lembretes(contexto, ignore=None):
              )
 async def _lembretes(contexto, dia=None):
     nome_do_servidor = contexto.guild.name
-    resultado = lembrete.mostra_lembretes(nome_do_servidor, dia, contexto.author)
+    resultado = lembrete.mostra_lembretes(nome_do_servidor, dia)
     resultado = adiciona_info(resultado, contexto.author)
     await contexto.send(embed=resultado)
 
@@ -119,11 +119,16 @@ async def _lembretes(contexto, dia=None):
                      option_type=3,
                      required=False
                  ),
+                 create_option(
+                     name="cargo_ou_pessoa",
+                     description="Marca o cargo ou pessoa descrita.",
+                     option_type=3,
+                     required=False
+                 ),
              ])
-async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None):
+async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None, cargo_ou_pessoa=None):
     nome = string.capwords(nome)
-    nome_do_servidor = contexto.guild.name
-    resultado = lembrete.adiciona_lembretes(nome_do_servidor, nome, dia, informacao_adicional)
+    resultado = lembrete.adiciona_lembretes(contexto.guild, nome, dia, informacao_adicional, cargo_ou_pessoa)
     resultado = adiciona_info(resultado, contexto.author)
     await contexto.send(embed=resultado)
 
@@ -159,7 +164,8 @@ async def _remover_lembrete(contexto, nome):
              )
 async def _hoje(contexto, ignore=None):
     dia = retorna_dia_da_semana()
-    embed = lembrete.mostra_lembretes(contexto.guild.name, dia, contexto.author)
+    embed = lembrete.mostra_lembretes(contexto.guild.name, dia)
+    embed = adiciona_info(embed, contexto.author)
     print("Enviando...")
     await contexto.send(embed=embed)
 
@@ -243,13 +249,25 @@ async def _editar_dia(contexto, nome, dia):
 
 
 @slash.slash(name="kmensagens_diarias",
-             description="Instruções para receber as mensagens diárias do Kaburagi."
+             description="Instruções para receber as mensagens diárias do Kaburagi.",
+             options=[
+                 create_option(
+                     name="ignore",
+                     description="ignore",
+                     option_type=3,
+                     required=False
+                 )
+             ]
              )
-async def _mensagens_diarias(contexto):
-    mensagem = Embed(title="Para receber mensagens diárias dos lembretes no servidor, faça:")
+async def _mensagens_diarias(contexto, ignore=None):
+    mensagem = Embed(title="Os lembretes diários funcionam da seguinte forma:")
     mensagem = adiciona_info(mensagem)
-    mensagem.add_field(name="Crie um canal para o Kaburagi", value="O nome do canal deve ser: kaburagi", inline=False)
-    mensagem.add_field(name="Crie um cargo para o Kaburagi marcar", value="O nome do cargo deve ser: Esquecido",
+    mensagem.add_field(name="Crie um canal para o kaburagi enviar os lembretes",
+                       value="No seu servidor, crie um canal de texto com o nome: Kaburagi.",
+                       inline=False)
+    mensagem.add_field(name="Crie lembretes", value="Utilize os comandos para criar lembretes.", inline=False)
+    mensagem.add_field(name="Pronto!",
+                       value="O Kaburagi vai automaticamente enviar os lembretes no canal criado quando chegar a hora.",
                        inline=False)
     await contexto.send(embed=mensagem)
 

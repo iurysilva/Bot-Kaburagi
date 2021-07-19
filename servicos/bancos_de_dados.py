@@ -88,3 +88,21 @@ class Bancos_De_Dados:
             dataframe = pd.read_sql_query("select * from %s" % tabela, banco)
             return dataframe.loc[linha]
         return False
+
+    def retorna_items_de_coluna_sem_repeticao(self, nome_do_banco, tabela, coluna, coluna_limitadora=None, limite=None):
+        if self.verifica_banco(nome_do_banco):
+            banco = self.acessar_banco(nome_do_banco)
+            dataframe = pd.read_sql_query("select * from %s" % tabela, banco)
+            itens = []
+            if coluna_limitadora is None:
+                for i in range(len(dataframe)):
+                    if dataframe[coluna][i] not in itens:
+                        itens.append(dataframe[coluna][i])
+                return itens
+            else:
+                for i in range(len(dataframe)):
+                    if dataframe[coluna][i] not in itens and dataframe[coluna_limitadora][i] == limite:
+                        itens.append(dataframe[coluna][i])
+                return itens
+        else:
+            return []

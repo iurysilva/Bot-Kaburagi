@@ -18,7 +18,7 @@ class Lembrete():
                           "Edita as informações adicionais de um lembrete."],
                          ["/keditar_dia (nome) (dia)", "Edita o dia de um lembrete."],
                          ["/kmensagens_diarias",
-                          "Informa os requisitos para implementar mensagens diarias no servidor."]]
+                          "Informa como fazer o Kaburagi enviar lembretes automáticos no servidor."]]
         
     def ajuda(self):
         embed = Embed(title="Lista de Comandos:")
@@ -40,11 +40,12 @@ class Lembrete():
                 embed = embed.add_field(name="**{}**".format(atributo), value='Há {} lembrete(s)'.format(numero_lembretes), inline=False)
 
         for lembrete in lembretes_dia:
+            cargo = "*Marcar: %s*" % (lembrete[3])
             descricao = "*Informação: %s*" % (lembrete[2])
-            embed.add_field(name="> {}".format(lembrete[0]), value="> {}".format(descricao), inline=True)
+            embed.add_field(name="> {}".format(lembrete[0]), value="> {}\n".format(descricao) + "> {}".format(cargo), inline=True)
         return embed
 
-    def mostra_lembretes(self, nome_do_servidor, dia=None, autor=None):
+    def mostra_lembretes(self, nome_do_servidor, dia=None):
         print('\nFunção mostra lembretes')
         banco_existe = self.banco_de_dados.verifica_banco(nome_do_servidor)
         dia_especifico = False
@@ -72,15 +73,26 @@ class Lembrete():
             embed = Embed(title="Este servidor não possui lembretes")
             return embed
 
-    def adiciona_lembretes(self, nome_do_servidor, nome, dia, adicional):
+    def adiciona_lembretes(self, servidor, nome, dia, adicional, cargo):
         print('\nFunção adicionar lembrete')
-        dados = {"Nome": nome, "Dia": dia, "Adicional": adicional}
-        if not self.banco_de_dados.insere_dados(nome_do_servidor, self.tabela, dados, "Nome"):
+        cargo_ou_pessoa_existe = False
+        if cargo is not None:
+            for cargo_do_servidor in servidor.roles:
+                if cargo == cargo_do_servidor.name:
+                    cargo_ou_pessoa_existe = True
+                    break
+            for membro in servidor.members:
+                if cargo == membro.name or cargo_ou_pessoa_existe:
+                    cargo_ou_pessoa_existe = True
+            if not cargo_ou_pessoa_existe:
+                return Embed(title="Este cargo/pessoa não existe")
+        dados = {"Nome": nome, "Dia": dia, "Adicional": adicional, 'Cargo': cargo}
+        if not self.banco_de_dados.insere_dados(servidor.name, self.tabela, dados, "Nome"):
             embed = Embed(title="Falha ao inserir lembrete (nome já existe na lista?)")
             print("Falha ao adicionar lembrete")
             return embed
         embed = Embed(title="Lembrete Inserido\n")
-        embed.add_field(name=nome, value="Dia: %s\nInformação Adicional: %s" % (dia, adicional))
+        embed.add_field(name=nome, value="Dia: %s\nInformação Adicional: %s\nMarcar: %s" % (dia, adicional, cargo))
         print("Lembrete inserido com sucesso\n")
         return embed
 
@@ -106,32 +118,42 @@ class Lembrete():
         return embed
 
     async def alarme(self, cliente):
-        horarios_para_avisar = ['09:00', '19:30']
+        horarios_para_avisar = ['14:57', '19:30']
         for servidor in cliente.guilds:
-            if retorna_hora() in horarios_para_avisar:
+            if retorna_hora() in horarios_para_avisar and self.banco_de_dados.verifica_banco(servidor.name):
+                dia = retorna_dia_da_semana()
                 message_channel = None
-                cargo = None
-                for role in servidor.roles:
-                    if role.name == "Esquecido":
-                        cargo = role
+                cargos_para_marcar = []
+                cargos = self.banco_de_dados.retorna_items_de_coluna_sem_repeticao(servidor.name, self.tabela, "Cargo",
+                                                                                   coluna_limitadora="Dia", limite=dia)
+                for cargo_para_marcar in cargos:
+                    for cargo_do_servidor in servidor.roles:
+                        if cargo_para_marcar == cargo_do_servidor.name:
+                            cargos_para_marcar.append(cargo_do_servidor)
+                    for membro in servidor.members:
+                        if cargo_para_marcar == membro.name:
+                            cargos_para_marcar.append(membro)
+                print(cargos_para_marcar)
                 for canal in servidor.channels:
                     if canal.name == "kaburagi":
                         message_channel = canal
                 dia_da_semana = retorna_dia_da_semana()
                 resultado = self.mostra_lembretes(servidor.name, dia=dia_da_semana)
-                if self.banco_de_dados.verifica_banco(servidor.name) and cargo and message_channel:
+                if message_channel:
                     if resultado.title != 'Não há lembretes para **%s**' % dia_da_semana:
                         print(f"Enviando para: {message_channel}")
-                        print(cargo)
-                        await message_channel.send(cargo.mention, embed=resultado)
+                        mencoes = ''
+                        if cargos_para_marcar:
+                            for mencao in cargos_para_marcar:
+                                mencoes += '%s ' % mencao.mention
+                            await message_channel.send(mencoes, embed=resultado)
+                        else:
+                            await message_channel.send(embed=resultado)
                     else:
                         print("Não há lembretes para %s" % dia_da_semana)
                 else:
-                    if not cargo:
-                        print('cargo não existe no servidor')
-                    elif not message_channel:
+                    if not message_channel:
                         print('canal não existe no servidor')
-                    print("Função hoje retornou False")
 
             else:
-                print("Hora %s não é um horario para avisar" % retorna_hora())
+                print("Hora %s não é um horario para avisar ou servidor %s não existe" % (retorna_hora(), servidor))
