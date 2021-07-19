@@ -35,19 +35,25 @@ class Filmes():
         print("Função retorna anime para: ", nome)
         movie = Movie()
         pesquisa = movie.search(nome)
-        filme = pesquisa[0]
-        return filme
+        if pesquisa:
+            filme = pesquisa[0]
+            return filme
+        else:
+            return False
 
     def procura(self, nome):
         print("\nFunção procura para o filme: ", nome)
         filme = self.retorna_filme(nome)
-        mensagem = Embed(title=filme['title'])
-        mensagem.set_image(url='https://image.tmdb.org/t/p/original/' + filme['poster_path'])
-        mensagem.add_field(name="Nota", value=str(filme['vote_average']))
-        mensagem.add_field(name="Número de Votos", value=str(filme['vote_count']))
-        mensagem.add_field(name="Lançamento", value=str(filme['release_date']))
-        mensagem.add_field(name="Sinopse", value=traduzir_do_ingles(str(filme['overview']))[0:1020] + "...")
-        return mensagem
+        if filme is not False:
+            mensagem = Embed(title=filme['title'])
+            mensagem.set_image(url='https://image.tmdb.org/t/p/original/' + filme['poster_path'])
+            mensagem.add_field(name="Nota", value=str(filme['vote_average']))
+            mensagem.add_field(name="Número de Votos", value=str(filme['vote_count']))
+            mensagem.add_field(name="Lançamento", value=str(filme['release_date']))
+            mensagem.add_field(name="Sinopse", value=traduzir_do_ingles(str(filme['overview']))[0:1020] + "...")
+            return mensagem
+        else:
+            return Embed(title="Filme não encontrado")
 
     def adicionar_filme_na_pool(self, reaction, user, nome, nome_do_servidor):
         print("\nFunção adicionar filme na pool, reação: ", reaction)

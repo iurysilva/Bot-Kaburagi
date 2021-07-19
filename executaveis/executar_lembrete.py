@@ -114,6 +114,74 @@ async def _lembretes(contexto, dia=None):
                      ]
                  ),
                  create_option(
+                     name="hora",
+                     description="Hora na qual você quer ser lembrado.",
+                     option_type=3,
+                     required=True,
+                     choices=[
+                         create_choice(
+                             name="09:00",
+                             value="09:00"
+                         ),
+                         create_choice(
+                             name="10:00",
+                             value="10:00"
+                         ),
+                         create_choice(
+                             name="11:00",
+                             value="11:00"
+                         ),
+                         create_choice(
+                             name="12:00",
+                             value="12:00"
+                         ),
+                         create_choice(
+                             name="13:00",
+                             value="13:00"
+                         ),
+                         create_choice(
+                             name="14:00",
+                             value="14:00"
+                         ),
+                         create_choice(
+                             name="15:00",
+                             value="15:00"
+                         ),
+                         create_choice(
+                             name="16:00",
+                             value="16:00"
+                         ),
+                         create_choice(
+                             name="17:00",
+                             value="17:00"
+                         ),
+                         create_choice(
+                             name="18:00",
+                             value="18:00"
+                         ),
+                         create_choice(
+                             name="19:00",
+                             value="19:00"
+                         ),
+                         create_choice(
+                             name="20:00",
+                             value="20:00"
+                         ),
+                         create_choice(
+                             name="21:00",
+                             value="21:00"
+                         ),
+                         create_choice(
+                             name="22:00",
+                             value="22:00"
+                         ),
+                         create_choice(
+                             name="23:00",
+                             value="23:00"
+                         ),
+                     ]
+                 ),
+                 create_option(
                      name="informacao_adicional",
                      description="Alguma informação adicional para o lembrete.",
                      option_type=3,
@@ -126,9 +194,9 @@ async def _lembretes(contexto, dia=None):
                      required=False
                  ),
              ])
-async def _adicionar_lembrete(contexto, nome, dia, informacao_adicional=None, cargo_ou_pessoa=None):
+async def _adicionar_lembrete(contexto, nome, dia, hora, informacao_adicional=None, cargo_ou_pessoa=None):
     nome = string.capwords(nome)
-    resultado = lembrete.adiciona_lembretes(contexto.guild, nome, dia, informacao_adicional, cargo_ou_pessoa)
+    resultado = lembrete.adiciona_lembretes(contexto.guild, nome, dia, hora, informacao_adicional, cargo_ou_pessoa)
     resultado = adiciona_info(resultado, contexto.author)
     await contexto.send(embed=resultado)
 
@@ -166,7 +234,6 @@ async def _hoje(contexto, ignore=None):
     dia = retorna_dia_da_semana()
     embed = lembrete.mostra_lembretes(contexto.guild.name, dia)
     embed = adiciona_info(embed, contexto.author)
-    print("Enviando...")
     await contexto.send(embed=embed)
 
 
