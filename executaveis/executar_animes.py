@@ -59,9 +59,13 @@ async def _anime_procura(contexto, anime):
                  )
              ]
              )
-async def _anime_procura_detalhada(contexto, nome):
+async def _anime_procura_detalhada(contexto, anime):
     await contexto.send("Pesquisando...", delete_after=1)
-    resultado = animes.procura_detalhada(nome, autor=contexto.author)
+    try:
+        resultado = animes.procura(anime, autor=contexto.author)
+    except ValueError:
+        await contexto.send("Anime não encontrado")
+        return 0
     resultado = adiciona_info(resultado, autor=contexto.author)
     try:
         await contexto.channel.send(embed=resultado)
