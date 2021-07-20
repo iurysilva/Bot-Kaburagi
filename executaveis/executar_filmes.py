@@ -1,6 +1,7 @@
 from executaveis.initiate_bot import *
 from funcionalidades import Filmes
 import asyncio
+import discord
 
 filmes = Filmes()
 
@@ -37,7 +38,11 @@ async def _filme_procura(contexto, filme):
     await contexto.send("Pesquisando...", delete_after=1)
     resultado = filmes.procura(filme)
     resultado = adiciona_info(resultado, autor=contexto.author)
-    await contexto.channel.send(embed=resultado)
+    try:
+        await contexto.channel.send(embed=resultado)
+    except discord.errors.Forbidden:
+        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        return 0
 
 
 @slash.slash(name="kfilme_pool_adicionar",
@@ -56,7 +61,11 @@ async def _filme_pool_adicionar(contexto, nome):
     embed = filmes.procura(nome)
     filme = embed.title
     embed.title = "Você deseja adicionar o filme %s para a pool?" % filme
-    mensagem = await contexto.channel.send(embed=embed)
+    try:
+        mensagem = await contexto.channel.send(embed=embed)
+    except discord.errors.Forbidden:
+        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        return 0
     await mensagem.add_reaction("✅")
     await mensagem.add_reaction("❌")
     while True:
@@ -108,7 +117,11 @@ async def _filme_pool(contexto, ignore=None):
     nome_do_servidor = contexto.guild.name
     resultado = filmes.visualizar_pool(nome_do_servidor)
     resultado = adiciona_info(resultado, autor=contexto.author)
-    mensagem = await contexto.send(embed=resultado)
+    try:
+        mensagem = await contexto.channel.send(embed=resultado)
+    except discord.errors.Forbidden:
+        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        return 0
     linhas = filmes.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, filmes.tabela)
     for reagindo in range(linhas):
         await mensagem.add_reaction(filmes.emojis[reagindo])

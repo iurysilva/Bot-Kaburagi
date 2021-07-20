@@ -35,9 +35,17 @@ async def _ajuda_animes(contexto, ignore=None):
              )
 async def _anime_procura(contexto, anime):
     await contexto.send("Pesquisando...", delete_after=1)
-    resultado = animes.procura(anime, autor=contexto.author)
+    try:
+        resultado = animes.procura(anime, autor=contexto.author)
+    except ValueError:
+        await contexto.send("Anime não encontrado")
+        return 0
     resultado = adiciona_info(resultado, autor=contexto.author)
-    await contexto.channel.send(embed=resultado)
+    try:
+        await contexto.channel.send(embed=resultado)
+    except discord.errors.Forbidden:
+        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        return 0
 
 
 @slash.slash(name="kanime_procura_detalhada",
@@ -55,7 +63,11 @@ async def _anime_procura_detalhada(contexto, nome):
     await contexto.send("Pesquisando...", delete_after=1)
     resultado = animes.procura_detalhada(nome, autor=contexto.author)
     resultado = adiciona_info(resultado, autor=contexto.author)
-    await contexto.channel.send(embed=resultado)
+    try:
+        await contexto.channel.send(embed=resultado)
+    except discord.errors.Forbidden:
+        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        return 0
 
 
 @slash.slash(name="kanime_pool_adicionar",
@@ -74,7 +86,11 @@ async def _anime_pool_adicionar(contexto, nome):
     embed = animes.procura(nome, contexto.author)
     anime = embed.title
     embed.title = "Você deseja adicionar o anime %s para a pool?" % anime
-    mensagem = await contexto.channel.send(embed=embed)
+    try:
+        mensagem = await contexto.channel.send(embed=embed)
+    except discord.errors.Forbidden:
+        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        return 0
     await mensagem.add_reaction("✅")
     await mensagem.add_reaction("❌")
     while True:
@@ -126,7 +142,11 @@ async def _anime_pool(contexto, ignore=None):
     nome_do_servidor = contexto.guild.name
     resultado = animes.visualizar_pool(nome_do_servidor)
     resultado = adiciona_info(resultado, autor=contexto.author)
-    mensagem = await contexto.send(embed=resultado)
+    try:
+        mensagem = await contexto.channel.send(embed=resultado)
+    except discord.errors.Forbidden:
+        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        return 0
     linhas = animes.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, animes.tabela)
     for reagindo in range(linhas):
         await mensagem.add_reaction(animes.emojis[reagindo])
