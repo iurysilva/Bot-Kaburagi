@@ -41,7 +41,7 @@ async def _filme_procura(contexto, filme):
     try:
         await contexto.channel.send(embed=resultado)
     except discord.errors.Forbidden:
-        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        await contexto.send("Bot não tem permissão nesse canal")
         return 0
 
 
@@ -64,7 +64,7 @@ async def _filme_pool_adicionar(contexto, nome):
     try:
         mensagem = await contexto.channel.send(embed=embed)
     except discord.errors.Forbidden:
-        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        await contexto.send("Bot não tem permissão nesse canal")
         return 0
     await mensagem.add_reaction("✅")
     await mensagem.add_reaction("❌")
@@ -118,13 +118,13 @@ async def _filme_pool(contexto, ignore=None):
     resultado = filmes.visualizar_pool(nome_do_servidor)
     resultado = adiciona_info(resultado, autor=contexto.author)
     try:
-        mensagem = await contexto.channel.send(embed=resultado)
+        mensagem = await contexto.send(embed=resultado)
+        linhas = filmes.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, filmes.tabela)
+        for reagindo in range(linhas):
+            await mensagem.add_reaction(filmes.emojis[reagindo])
     except discord.errors.Forbidden:
-        await contexto.send("Bot não tem permissão nesse canal", delete_after=1)
+        await contexto.send("Bot não tem permissão para reagir nesse canal")
         return 0
-    linhas = filmes.banco_de_dados.retornar_numero_de_linhas(nome_do_servidor, filmes.tabela)
-    for reagindo in range(linhas):
-        await mensagem.add_reaction(filmes.emojis[reagindo])
 
 
 @slash.slash(name="kfilme_pool_limpar",
