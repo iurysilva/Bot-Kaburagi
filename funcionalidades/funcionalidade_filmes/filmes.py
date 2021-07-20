@@ -46,7 +46,8 @@ class Filmes():
         filme = self.retorna_filme(nome)
         if filme is not False:
             mensagem = Embed(title=filme['title'])
-            mensagem.set_image(url='https://image.tmdb.org/t/p/original/' + filme['poster_path'])
+            if filme['poster_path'] is not None:
+                mensagem.set_image(url='https://image.tmdb.org/t/p/original/' + filme['poster_path'])
             mensagem.add_field(name="Nota", value=str(filme['vote_average']))
             mensagem.add_field(name="Número de Votos", value=str(filme['vote_count']))
             mensagem.add_field(name="Lançamento", value=str(filme['release_date']))
