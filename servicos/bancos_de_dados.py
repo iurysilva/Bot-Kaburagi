@@ -108,6 +108,7 @@ class Bancos_De_Dados:
                             limites_aceitos += 1
                     if limites_aceitos == len(colunas_limitadoras):
                         itens.append(dataframe[coluna][i])
+                    limites_aceitos = 0
                 return itens
         else:
             return []
