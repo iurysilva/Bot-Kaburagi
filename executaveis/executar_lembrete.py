@@ -201,6 +201,14 @@ async def _adicionar_lembrete(contexto, nome, dia, hora, informacao_adicional=No
     await contexto.send(embed=resultado)
 
 
+@cliente.command()
+async def adicionar_lembrete(contexto, nome, dia, hora, informacao_adicional=None, cargo_ou_pessoa=None):
+    nome = string.capwords(nome)
+    resultado = lembrete.adiciona_lembretes(contexto.guild, nome, dia, hora, informacao_adicional, cargo_ou_pessoa)
+    resultado = adiciona_info(resultado, contexto.author)
+    await contexto.send(embed=resultado)
+
+
 @slash.slash(name="kremover_lembrete",
              description="Remove um lembrete do servidor.",
              options=[

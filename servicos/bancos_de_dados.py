@@ -89,19 +89,24 @@ class Bancos_De_Dados:
             return dataframe.loc[linha]
         return False
 
-    def retorna_items_de_coluna_sem_repeticao(self, nome_do_banco, tabela, coluna, coluna_limitadora=None, limite=None):
+    def retorna_items_de_coluna_sem_repeticao(self, nome_do_banco, tabela, coluna, colunas_limitadoras=None,
+                                              limites=None):
         if self.verifica_banco(nome_do_banco):
             banco = self.acessar_banco(nome_do_banco)
             dataframe = pd.read_sql_query("select * from %s" % tabela, banco)
             itens = []
-            if coluna_limitadora is None:
+            if colunas_limitadoras is None:
                 for i in range(len(dataframe)):
                     if dataframe[coluna][i] not in itens:
                         itens.append(dataframe[coluna][i])
                 return itens
             else:
+                limites_aceitos = 0
                 for i in range(len(dataframe)):
-                    if dataframe[coluna][i] not in itens and dataframe[coluna_limitadora][i] == limite:
+                    for j in range(len(colunas_limitadoras)):
+                        if dataframe[coluna][i] not in itens and dataframe[colunas_limitadoras[j]][i] == limites[j]:
+                            limites_aceitos += 1
+                    if limites_aceitos == len(colunas_limitadoras):
                         itens.append(dataframe[coluna][i])
                 return itens
         else:

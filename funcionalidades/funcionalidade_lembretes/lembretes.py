@@ -135,13 +135,16 @@ class Lembrete():
         for servidor in cliente.guilds:
             if self.banco_de_dados.verifica_banco(servidor.name):
                 dia = retorna_dia_da_semana()
-                resultado = self.mostra_lembretes(servidor.name, dia=dia, hora=retorna_hora())
+                hora = retorna_hora()
+                resultado = self.mostra_lembretes(servidor.name, dia=dia, hora=hora)
                 if resultado.title != 'Não há lembretes para **%s**' % dia:
                     message_channel = None
                     cargos_para_marcar = []
+                    lim = ["Dia", "Hora"]
+                    valores = [dia, hora]
                     cargos = self.banco_de_dados.retorna_items_de_coluna_sem_repeticao(servidor.name, self.tabela,
-                                                                                       "Cargo", coluna_limitadora="Dia",
-                                                                                       limite=dia)
+                                                                                       "Cargo", colunas_limitadoras=lim,
+                                                                                       limites=valores)
                     for cargo_para_marcar in cargos:
                         for cargo_do_servidor in servidor.roles:
                             if cargo_para_marcar == cargo_do_servidor.name:
@@ -165,6 +168,6 @@ class Lembrete():
                         if not message_channel:
                             print('canal não existe no servidor')
                 else:
-                    print("Não há lembretes para %s" % dia)
+                    print("Não há lembretes para %s em %s" % (dia, servidor))
             else:
                 print("Hora %s não é um horario para avisar ou servidor %s não existe" % (retorna_hora(), servidor))
