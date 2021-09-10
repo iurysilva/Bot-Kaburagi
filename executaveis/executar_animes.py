@@ -36,7 +36,7 @@ async def _ajuda_animes(contexto, ignore=None):
 async def _anime_procura(contexto, anime):
     await contexto.send("Pesquisando...", delete_after=1)
     try:
-        resultado = animes.procura(anime, autor=contexto.author)
+        resultado = animes.procura(anime)
     except ValueError:
         await contexto.send("Anime não encontrado")
         return 0
@@ -62,7 +62,7 @@ async def _anime_procura(contexto, anime):
 async def _anime_procura_detalhada(contexto, anime):
     await contexto.send("Pesquisando...", delete_after=1)
     try:
-        resultado = animes.procura_detalhada(anime, autor=contexto.author)
+        resultado = animes.procura_detalhada(anime)
     except ValueError:
         await contexto.send("Anime não encontrado")
         return 0
@@ -87,7 +87,7 @@ async def _anime_procura_detalhada(contexto, anime):
              )
 async def _anime_pool_adicionar(contexto, nome):
     await contexto.send("Pesquisando...", delete_after=1)
-    embed = animes.procura(nome, contexto.author)
+    embed = animes.procura(nome)
     anime = embed.title
     embed.title = "Você deseja adicionar o anime %s para a pool?" % anime
     try:
@@ -123,7 +123,7 @@ async def _anime_pool_adicionar(contexto, nome):
              )
 async def _anime_pool_remover(contexto, nome):
     await contexto.send("Pesquisando...", delete_after=1)
-    embed = animes.procura(nome, contexto.author)
+    embed = animes.procura(nome)
     anime = embed.title
     nome_do_servidor = contexto.guild.name
     resultado = animes.remover_anime_da_pool(nome_do_servidor, anime)

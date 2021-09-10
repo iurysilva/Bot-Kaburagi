@@ -41,7 +41,7 @@ class Animes():
         anime = Anime(id_do_anime)
         return anime
 
-    def procura(self, nome, autor):
+    def procura(self, nome):
         print("\nFunção procura para o anime: ", nome)
         anime = self.retorna_anime(nome)
         if anime is not False:
@@ -55,7 +55,7 @@ class Animes():
             mensagem = Embed(tittle="Anime não encontrado")
         return mensagem
 
-    def procura_detalhada(self, nome, autor):
+    def procura_detalhada(self, nome):
         print("\nFunção procura para o anime: ", nome)
         anime = self.retorna_anime_detalhado(nome)
         if anime is not False:
