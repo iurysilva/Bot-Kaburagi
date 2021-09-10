@@ -52,7 +52,7 @@ async def _anime_procura(contexto, anime):
              description="Exibe informações detalhadas sobre um anime específico",
              options=[
                  create_option(
-                     name="nome",
+                     name="anime",
                      description="Nome do anime.",
                      option_type=3,
                      required=True
@@ -62,7 +62,7 @@ async def _anime_procura(contexto, anime):
 async def _anime_procura_detalhada(contexto, anime):
     await contexto.send("Pesquisando...", delete_after=1)
     try:
-        resultado = animes.procura(anime, autor=contexto.author)
+        resultado = animes.procura_detalhada(anime, autor=contexto.author)
     except ValueError:
         await contexto.send("Anime não encontrado")
         return 0
