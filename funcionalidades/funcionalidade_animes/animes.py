@@ -44,26 +44,32 @@ class Animes():
     def procura(self, nome, autor):
         print("\nFunção procura para o anime: ", nome)
         anime = self.retorna_anime(nome)
-        mensagem = Embed(title=anime.title)
-        mensagem.set_image(url=anime.image_url)
-        mensagem.add_field(name="Nota", value=str(anime.score))
-        mensagem.add_field(name="Episódios", value=str(anime.episodes))
-        mensagem.add_field(name="Tipo", value=str(anime.type))
-        mensagem.add_field(name="Sinopse", value=str(traduzir_do_ingles(anime.synopsis)))
+        if anime is not False:
+            mensagem = Embed(title=anime.title)
+            mensagem.set_image(url=anime.image_url)
+            mensagem.add_field(name="Nota", value=str(anime.score))
+            mensagem.add_field(name="Episódios", value=str(anime.episodes))
+            mensagem.add_field(name="Tipo", value=str(anime.type))
+            mensagem.add_field(name="Sinopse", value=str(traduzir_do_ingles(anime.synopsis)))
+        else:
+            mensagem = Embed(tittle="Anime não encontrado")
         return mensagem
 
     def procura_detalhada(self, nome, autor):
         print("\nFunção procura para o anime: ", nome)
         anime = self.retorna_anime_detalhado(nome)
-        mensagem = Embed(title=anime.title)
-        mensagem.set_image(url=anime.image_url)
-        mensagem.add_field(name="Nota", value=str(anime.score))
-        mensagem.add_field(name="Episódios", value=str(anime.episodes))
-        mensagem.add_field(name="Estúdio", value=str(anime.studios[0]))
-        mensagem.add_field(name="Status", value=str(traduzir_do_ingles(anime.status)))
-        mensagem.add_field(name="Lançamento", value=str(traduzir_do_ingles(anime.aired)))
-        mensagem.add_field(name="Gêneros", value=str(traduzir_do_ingles(', '.join(anime.genres))))
-        mensagem.add_field(name="Sinopse", value=str(traduzir_do_ingles(anime.synopsis))[0:1020] + "...")
+        if anime is not False:
+            mensagem = Embed(title=anime.title)
+            mensagem.set_image(url=anime.image_url)
+            mensagem.add_field(name="Nota", value=str(anime.score))
+            mensagem.add_field(name="Episódios", value=str(anime.episodes))
+            mensagem.add_field(name="Estúdio", value=str(anime.studios[0]))
+            mensagem.add_field(name="Status", value=str(traduzir_do_ingles(anime.status)))
+            mensagem.add_field(name="Lançamento", value=str(traduzir_do_ingles(anime.aired)))
+            mensagem.add_field(name="Gêneros", value=str(traduzir_do_ingles(', '.join(anime.genres))))
+            mensagem.add_field(name="Sinopse", value=str(traduzir_do_ingles(anime.synopsis))[0:1020] + "...")
+        else:
+            mensagem = Embed(tittle="Anime não encontrado")
         return mensagem
 
     def adicionar_anime_na_pool(self, reaction, user, nome, nome_do_servidor):
