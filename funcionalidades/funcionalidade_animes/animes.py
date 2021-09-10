@@ -31,12 +31,19 @@ class Animes():
     def retorna_anime(self, nome):
         print("Função retorna anime para: ", nome)
         pesquisa = AnimeSearch(nome)
+        for anime in pesquisa.results:
+            if anime.title == nome:
+                return anime
         anime = pesquisa.results[0]
         return anime
 
     def retorna_anime_detalhado(self, nome):
         print("Função retorna anime detalhada para: ", nome)
         pesquisa = AnimeSearch(nome)
+        for anime in pesquisa.results:
+            if anime.title == nome:
+                id_do_anime = anime.mal_id
+                return Anime(id_do_anime)
         id_do_anime = pesquisa.results[0].mal_id
         anime = Anime(id_do_anime)
         return anime

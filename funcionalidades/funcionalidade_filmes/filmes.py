@@ -36,6 +36,9 @@ class Filmes():
         movie = Movie()
         pesquisa = movie.search(nome)
         if pesquisa:
+            for filme in pesquisa:
+                if filme['original_title'] == nome or filme['title'] == nome:
+                    return filme
             filme = pesquisa[0]
             return filme
         else:
